@@ -1,0 +1,21 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+"http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
+<!-- Generated 30 d??c. 2013 12:24:10 by Hibernate Tools 3.4.0.CR1 -->
+<hibernate-mapping>
+    <class name="com.resourcesHumaines.metier.bo.Compte" table="COMPTE">
+        <id name="idCompte" type="java.lang.Long">
+            <column name="IDCOMPTE" />
+            <generator class="native" />
+        </id>
+        <property name="login" type="java.lang.String">
+            <column name="LOGIN" />
+        </property>
+        <property name="password" type="java.lang.String">
+            <column name="PASSWORD" />
+        </property>
+        <many-to-one name="role" class="com.resourcesHumaines.metier.bo.Role" fetch="join">
+            <column name="ROLE" />
+        </many-to-one>
+    </class>
+</hibernate-mapping>

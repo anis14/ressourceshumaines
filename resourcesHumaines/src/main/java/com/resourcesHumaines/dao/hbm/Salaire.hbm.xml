@@ -1,0 +1,21 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+"http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
+<!-- Generated 30 d??c. 2013 12:24:10 by Hibernate Tools 3.4.0.CR1 -->
+<hibernate-mapping>
+    <class name="com.resourcesHumaines.metier.bo.Salaire" table="SALAIRE">
+        <id name="idSalaire" type="java.lang.Long">
+            <column name="IDSALAIRE" />
+            <generator class="native" />
+        </id>
+        <property name="salaire" type="float">
+            <column name="SALAIRE" />
+        </property>
+        <property name="dateAffectation" type="java.util.Date">
+            <column name="DATEAFFECTATION" />
+        </property>
+        <property name="salaireActuel" type="boolean">
+            <column name="SALAIREACTUEL" />
+        </property>
+    </class>
+</hibernate-mapping>

@@ -1,0 +1,21 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+"http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
+<!-- Generated 30 d??c. 2013 12:24:10 by Hibernate Tools 3.4.0.CR1 -->
+<hibernate-mapping>
+    <class name="com.resourcesHumaines.metier.bo.Affectation" table="AFFECTATION">
+        <id name="idAffectation" type="java.lang.Long">
+            <column name="IDAFFECTATION" />
+            <generator class="native" />
+        </id>
+        <property name="dateAffectation" type="java.util.Date">
+            <column name="DATEAFFECTATION" />
+        </property>
+        <many-to-one name="collaborateur" class="com.resourcesHumaines.metier.bo.Collaborateur" fetch="join">
+            <column name="COLLABORATEUR" />
+        </many-to-one>
+        <many-to-one name="managerRH" class="com.resourcesHumaines.metier.bo.ManagerRH" fetch="join">
+            <column name="MANAGERRH" />
+        </many-to-one>
+    </class>
+</hibernate-mapping>

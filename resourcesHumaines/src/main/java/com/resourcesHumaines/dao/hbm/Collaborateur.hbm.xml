@@ -1,0 +1,87 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+"http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
+<!-- Generated 30 d??c. 2013 12:24:10 by Hibernate Tools 3.4.0.CR1 -->
+<hibernate-mapping>
+    <class name="com.resourcesHumaines.metier.bo.Collaborateur" table="COLLABORATEUR">
+        <id name="idCollaborateur" type="java.lang.Long">
+            <column name="IDCOLLABORATEUR" />
+            <generator class="native" />
+        </id>
+        <property name="matricule" type="java.lang.String">
+            <column name="MATRICULE" />
+        </property>
+        <property name="nom" type="java.lang.String">
+            <column name="NOM" />
+        </property>
+        <property name="prenom" type="java.lang.String">
+            <column name="PRENOM" />
+        </property>
+        <property name="abreviation" type="java.lang.String">
+            <column name="ABREVIATION" />
+        </property>
+        <property name="sexe" type="char">
+            <column name="SEXE" />
+        </property>
+        <property name="site" type="java.lang.String">
+            <column name="SITE" />
+        </property>
+        <property name="bu" type="java.lang.String">
+            <column name="BU" />
+        </property>
+        <list name="diplomes" inverse="false" table="DIPLOME" lazy="false">
+            <key>
+                <column name="idxCOLLABORATEUR" />
+            </key>
+            <list-index column="idxCollaborateur"></list-index>
+            <one-to-many class="com.resourcesHumaines.metier.bo.Diplome" />
+        </list>
+        <property name="dateEmbauche" type="java.util.Date">
+            <column name="DATEEMBAUCHE" />
+        </property>
+        <property name="moisBap" type="java.lang.String">
+            <column name="MOISBAP" />
+        </property>
+        <property name="dateDepart" type="java.util.Date">
+            <column name="DATEDEPART" />
+        </property>
+        <property name="dateParticipation" type="java.util.Date">
+            <column name="DATEPARTICIPATION" />
+        </property>
+        <list name="postes" inverse="false" table="POSTE" lazy="false">
+            <key>
+                <column name="IDCOLLABORATEUR" />
+            </key>
+            <list-index column="idxCOLLABORATEUR"></list-index>
+            <one-to-many class="com.resourcesHumaines.metier.bo.Poste" />
+        </list>
+        <list name="postesApp" inverse="false" table="POSTEAPP" lazy="false">
+            <key>
+                <column name="IDCOLLABORATEUR" />
+            </key>
+            <list-index column="idxCOLLABORATEUR"></list-index>
+            <one-to-many class="com.resourcesHumaines.metier.bo.PosteAPP" />
+        </list>
+        <list name="salaires" inverse="false" table="SALAIRE" lazy="false">
+            <key>
+                <column name="IDCOLLABORATEUR" />
+            </key>
+            <list-index column="idxCOLLABORATEUR"></list-index>
+            <one-to-many class="com.resourcesHumaines.metier.bo.Salaire" />
+        </list>
+        <list name="competences" inverse="false" table="COMPETENCE" lazy="false">
+            <key>
+                <column name="IDCOLLABORATEUR" />
+            </key>
+            <list-index column="idxCOLLABORATEUR"></list-index>
+            <one-to-many class="com.resourcesHumaines.metier.bo.Competence" />
+        </list>
+        <list name="affectations" inverse="false" table="AFFECTATION" lazy="false">
+            <key>
+                <column name="IDCOLLABORATEUR" />
+            </key>
+            <list-index column="idxCOLLABORATEUR"></list-index>
+            <one-to-many class="com.resourcesHumaines.metier.bo.Affectation" />
+        </list>
+    </class>
+</hibernate-mapping>
