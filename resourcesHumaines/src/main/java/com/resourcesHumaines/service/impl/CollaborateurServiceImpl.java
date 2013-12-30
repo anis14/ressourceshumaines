@@ -275,7 +275,7 @@ public class CollaborateurServiceImpl implements CollaborateurService {
 	 */
 	public void setAffecterDao(AffectationDao affecterDao) {
 		this.affecterDao = affecterDao;
-	}
+	}	
 
 	
 }

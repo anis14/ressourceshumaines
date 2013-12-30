@@ -9,6 +9,7 @@
 	 http://www.springframework.org/schema/aop 
 	 http://www.springframework.org/schema/aop/spring-aop-2.5.xsd">
 
+	<!-- SESSION FACTORY -->
 	<bean id="sessionFactory"
 		class="org.springframework.orm.hibernate3.LocalSessionFactoryBean">
 		<property name="dataSource" ref="dataSource" />
@@ -42,6 +43,7 @@
 			</props>
 		</property>
 	</bean>
+	<!-- DATASOURCE -->
 	<bean id="dataSource"
 		class="org.springframework.jdbc.datasource.DriverManagerDataSource">
 		<property name="driverClassName" value="com.mysql.jdbc.Driver" />
@@ -60,44 +62,78 @@
 	<bean id="affectationDao" class="com.resourcesHumaines.dao.impl.AffectationDaoImpl">
 		<property name="sessionFactory" ref="sessionFactory" />
 	</bean>
-	
+
 	<bean id="collaborateurDao" class="com.resourcesHumaines.dao.impl.CollaborateurDaoImpl">
 		<property name="sessionFactory" ref="sessionFactory" />
 	</bean>
-	
+
 	<bean id="competenceDao" class="com.resourcesHumaines.dao.impl.CompetenceDaoImpl">
 		<property name="sessionFactory" ref="sessionFactory" />
 	</bean>
-	
+
 	<bean id="managerRHDao" class="com.resourcesHumaines.dao.impl.ManagerRHDaoImpl">
 		<property name="sessionFactory" ref="sessionFactory" />
 	</bean>
-	
+
 	<bean id="posteAPPDao" class="com.resourcesHumaines.dao.impl.PosteAPPDaoImpl">
 		<property name="sessionFactory" ref="sessionFactory" />
 	</bean>
-	
+
 	<bean id="posteDao" class="com.resourcesHumaines.dao.impl.PosteDaoImpl">
 		<property name="sessionFactory" ref="sessionFactory" />
 	</bean>
-	
+
 	<bean id="salaireDao" class="com.resourcesHumaines.dao.impl.SalaireDaoImpl">
 		<property name="sessionFactory" ref="sessionFactory" />
 	</bean>
-	
+
 	<bean id="technologieDao" class="com.resourcesHumaines.dao.impl.TechnologieDaoImpl">
 		<property name="sessionFactory" ref="sessionFactory" />
 	</bean>
-	
+
 	<!-- les services -->
-	<bean id="collaborateurService" class="com.resourcesHumaines.service.impl.CollaborateurServiceImpl">
+	<bean id="collaborateurService"
+		class="com.resourcesHumaines.service.impl.CollaborateurServiceImpl">
 		<property name="affecterDao" ref="affectationDao" />
-		<property name="collaborateurDao" ref="collaborateurDao"/>
+		<property name="collaborateurDao" ref="collaborateurDao" />
 		<property name="competenceDao" ref="competenceDao" />
 		<property name="managerRHDao" ref="managerRHDao" />
 		<property name="posteAPPDao" ref="posteAPPDao" />
-		<property name="posteDao" ref="posteDao"/>
+		<property name="posteDao" ref="posteDao" />
 		<property name="salaireDao" ref="salaireDao" />
 		<property name="technologieDao" ref="technologieDao" />
 	</bean>
+
+<!-- aspet pour la gestion de la journalisation -->
+	<bean id="aspectLog" class="com.resourcesHumaines.aspets.Journalisation" />
+	<aop:config>
+		<aop:aspect id="journalisation" ref="aspectLog">
+			<aop:pointcut expression="execution(* com..*.*(..))" id="pointsDeJonction" />
+			<aop:before method="avantExecution" pointcut-ref="pointsDeJonction" />
+			<aop:after method="apresExecution" pointcut-ref="pointsDeJonction" />
+			<aop:after-throwing method="enException"
+				pointcut-ref="pointsDeJonction" />
+		</aop:aspect>
+	</aop:config>
+
+<!-- aspect pour la gestion des transactions -->
+	<bean id="transactionInterceptor"
+		class="org.springframework.transaction.interceptor.TransactionInterceptor">
+		<property name="transactionManager" ref="transactionManager" />
+		<property name="transactionAttributes">
+			<props>
+				<prop key="*">PROPAGATION_REQUIRED,-EntityNotFoundSericeException</prop>
+			</props>
+		</property>
+	</bean>
+
+	<bean id="collaborateurServiceTarget" class="org.springframework.aop.framework.ProxyFactoryBean">
+		<property name="target" ref="collaborateurService" />
+		<property name="interceptorNames">
+			<list>
+				<value>transactionInterceptor</value>
+			</list>
+		</property>
+	</bean>
+
 </beans>

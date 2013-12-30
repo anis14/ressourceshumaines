@@ -91,4 +91,5 @@ public interface CollaborateurService {
 	 * @return
 	 */
 	public List<Collaborateur> getAll();
+	
 }
