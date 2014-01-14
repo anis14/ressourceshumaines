@@ -1,0 +1,531 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:s="http://www.springframework.org/security/tags">
+
+<h:head>
+	<title>recherche</title>
+</h:head>
+<h:body>
+	<ui:composition template="modele.xhtml">
+		<ui:define name="body">
+			<h:form id="ac">
+					<p:growl id="growl"/> 
+					<p:inputText styleClass="keyword" id="keyword" value="#{collaborateurControlleur.abreviation}" required="true" label="Keyword" />  
+	        		<p:watermark for="keyword" value="tapez l abreviation" />
+	        		<p:commandButton styleClass="btn" action="#{collaborateurControlleur.rechercheParAbreviation()}" value="rechercher" update="resultat" ajax="true" /> 
+					<p:fieldset styleClass="afficher" legend="Resultat de recherche" toggleable="true" toggleSpeed="500" style="margin-top : 10px;">
+					<p:dataTable emptyMessage="remplissez vos criteres puis cliquer sur rechercher
+					pour trouver des collaborateurs" id="resultat" styleClass="data" var="col"
+						value="#{collaborateurControlleur.collaborateurs}"
+						paginator="true" rows="5"
+						paginatorTemplate="{CurrentPageReport}  {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
+						rowsPerPageTemplate="5,10,15" >
+						<p:ajax event="rowToggle" listener="#{collaborateurControlleur.onRowToggle(col)}" update="resultat"/> 
+						
+						 <p:column style="width:2%">  
+					            <p:rowToggler />  
+					     </p:column> 
+						<p:column>
+							<f:facet name="header">
+								<h:outputText value="Matricule" />
+							</f:facet>
+							<h:outputText value="#{col.matricule}" />
+						</p:column>
+
+						<p:column>
+							<f:facet name="header">
+								<h:outputText value="Nom" />
+							</f:facet>
+							<h:outputText value="#{col.nom}" />
+						</p:column>
+
+						<p:column>
+							<f:facet name="header">
+								<h:outputText value="Prenom" />
+							</f:facet>
+							<h:outputText value="#{col.prenom}" />
+						</p:column>
+
+						<p:column>
+							<f:facet name="header">
+								<h:outputText value="Abreviation" />
+							</f:facet>
+							<h:outputText value="#{col.abreviation}" />
+						</p:column>
+						<p:column>
+							<f:facet name="header">
+								<h:outputText value="Sexe" />
+							</f:facet>
+							<h:outputText value="#{col.sexe}" />
+						</p:column>
+						 <p:column style="width:4%">  
+				           	<p:commandButton id="selectionner" update=":ac:afficher" oncomplete="dlgAfficher.show();" icon="ui-icon-search" title="afficher plus d'informations">  
+				                <f:setPropertyActionListener value="#{col.clone()}" target="#{collaborateurControlleur.collaborateur}" />  
+				            </p:commandButton> 
+				         </p:column>
+				         <p:column style="width:4%">  
+				           	<p:commandButton id="mettreAJour" update=":ac:modifier" oncomplete="dlgModifier.show();" icon="ui-icon-refresh" title="mettre a jour les informations">  
+				                <f:setPropertyActionListener value="#{col}" target="#{collaborateurControlleur.collaborateur}" />  
+				            </p:commandButton> 
+				         </p:column>
+				         <s:authorize access="hasPermission(#contact,'modifier_colSalaireManagerPoste')">
+					         <p:column style="width:4%">  
+					           	<p:commandButton id="designerManagerRH" update=":ac:designerManagerRH" oncomplete="dlgDesignerManagerRH.show();" icon="ui-icon-add" title="designer un managerRH">  
+					                <f:setPropertyActionListener value="#{col}" target="#{collaborateurControlleur.collaborateur2}" />  
+					            </p:commandButton> 
+					         </p:column>
+					     </s:authorize>
+				         <p:rowExpansion> 
+				         	<p:fieldset styleClass="afficher"  toggleable="true" toggleSpeed="500">
+										<h:outputText value="salaire actuel : " />
+										<h:outputText value="#{collaborateurControlleur.salaire.salaire}" />
+										<br />
+										<h:outputText value="poste actuel : " />
+										<h:outputText value="#{collaborateurControlleur.poste.titre}" />
+										<br />
+										<h:outputText value="poste de niveau APP actuel : " />
+										<h:outputText value="#{collaborateurControlleur.posteApp.titre}" />
+										<br />
+										<h:outputText value="manager RH actuel : " />
+										<h:outputText value="#{collaborateurControlleur.managerRH.nom} #{collaborateurControlleur.managerRH.prenom}" />
+										<br />
+										<h:outputText rendered="#{collaborateurControlleur.collaborateur.affectations.size() > 1}" value="ancien manager RH : " />
+										<h:outputText rendered="#{collaborateurControlleur.collaborateur.affectations.size() > 1}" value="#{collaborateurControlleur.ancienManager.nom} #{collaborateurControlleur.ancienManager.prenom}" />
+							</p:fieldset>		
+				         	<p:fieldset styleClass="afficher" legend="Formations" toggleable="true" toggleSpeed="500" style="margin-top : 5px;">
+				         				<p:dataTable  emptyMessage="ce collaborateur n'a pas de formations" rowIndexVar="numero" var="dip" value="#{col.diplomes}">  
+									        <f:facet name="header">
+									        	la liste des formations
+									        </f:facet>
+									        <p:column headerText="Niveau">  
+									            <h:outputText value="#{dip.niveau}" />  
+									        </p:column>  
+									  
+									        <p:column headerText="Ecole">  
+									            <h:outputText value="#{dip.ecole}" />  
+									        </p:column> 
+									        
+									        <p:column headerText="Type d'ecole">  
+									            <h:outputText value="#{dip.typeEcole}" />  
+									        </p:column> 
+									        
+									        <p:column headerText="Type de diplome">  
+									            <h:outputText value="#{dip.typeDiplome}" />  
+									        </p:column> 
+									        
+									        <p:column headerText="Promotion">  
+									            <h:outputText value="#{dip.promotion}" />  
+									        </p:column> 
+									        <p:column style="width:4%">  
+									           	<p:commandButton update=":ac:mettreAJourDiplome" oncomplete="dlgModifierFormation.show();" icon="ui-icon-refresh" title="mettre a jour les informations">  
+									                <f:setPropertyActionListener value="#{dip.clone()}" target="#{collaborateurControlleur.diplome2}" /> 
+									                <f:setPropertyActionListener value="#{numero}" target="#{collaborateurControlleur.numeroLigne}" /> 
+									            	<f:setPropertyActionListener value="#{col}" target="#{collaborateurControlleur.collaborateur2}" ></f:setPropertyActionListener>
+									            </p:commandButton> 
+									         </p:column>
+									         <f:facet name="footer">
+									         	<p:commandButton value="ajouter une formation"  update=":ac:ajouterFormation" oncomplete="dlgAjouterFormation.show();" title="ajouter une nouvelle formation">  
+									            	<f:setPropertyActionListener value="#{col}" target="#{collaborateurControlleur.collaborateur2}" />
+									            </p:commandButton>
+									         </f:facet>
+									 </p:dataTable> 
+				         		</p:fieldset>
+				         		<p:fieldset styleClass="afficher" legend="Competences" toggleable="true" toggleSpeed="500" style="margin-top : 5px;">
+				         				<p:dataTable  emptyMessage="ce collaborateur n'a pas de competences" var="com" value="#{col.competences}">  
+									        <f:facet name="header">
+									        	la liste des competences
+									        </f:facet>
+									        <p:column headerText="Competence">  
+									            <h:outputText value="#{com.titre}" />  
+									        </p:column>  
+									  
+									        <p:column headerText="Technologie">  
+									            <h:outputText value="#{com.technologie.titre}" />  
+									        </p:column> 
+									        
+									        <p:column headerText="Niveau d'expertise">  
+									            <h:outputText value="#{com.niveauExpertise}" />  
+									        </p:column> 
+									 </p:dataTable> 
+				         		</p:fieldset>
+				         </p:rowExpansion>
+				         
+					</p:dataTable>
+				
+				<p:dialog width="800px" id="afficher" styleClass="afficher" header="Informations du collaborateur" widgetVar="dlgAfficher" resizable="false">  
+						<table>
+							<tr>
+								<td colspan="4">
+									<h:outputText value="Matricule : " />
+									<h:outputText value="#{collaborateurControlleur.collaborateur.matricule}"></h:outputText>
+								</td>
+							</tr>
+							<tr>
+								<td colspan="2">
+									<h:outputText value="Nom : " />
+									<h:outputText value="#{collaborateurControlleur.collaborateur.nom}" />
+								</td>
+								<td colspan="2">
+									<h:outputText value="Prenom : " />
+									<h:outputText value="#{collaborateurControlleur.collaborateur.prenom}" />
+								</td>
+							</tr>
+							<tr>
+								<td colspan="4">
+									<h:outputText value="Abreviation : " />
+									<h:outputText value="#{collaborateurControlleur.collaborateur.abreviation}" />
+								</td>
+							</tr>
+							<tr>
+								<td colspan="4">
+									<h:outputText value="Email : " />
+									<h:outputText value="#{collaborateurControlleur.collaborateur.email}" />
+								</td>
+							</tr>
+							<tr>
+								<td colspan="4">
+									<h:outputText value="Sexe : " />
+									<h:outputText value="#{collaborateurControlleur.collaborateur.sexe}" />
+								</td>
+							</tr>
+							<tr>
+								<td colspan="4">
+									<h:outputText value="Site d'affectation : " />
+									<h:outputText value="#{collaborateurControlleur.collaborateur.site}" />
+								</td>
+							</tr>
+							<tr>
+								<td colspan="4">
+									<h:outputText value="Business unit : " />
+									<h:outputText value="#{collaborateurControlleur.collaborateur.bu}" />
+								</td>
+							</tr>
+							<tr>
+								<td colspan="4">
+									<h:outputText value="Ancien collaborateur : " />
+									<h:outputText value="#{collaborateurControlleur.collaborateur.dateDepart != null}" />
+								</td>
+							</tr>
+							<tr>
+								<td colspan="2">
+									<h:outputText value="participe au seminaire d'integration : " />
+									<h:outputText value="#{collaborateurControlleur.collaborateur.dateParticipation != null}" />
+								</td>
+								<td colspan="2">
+									<h:outputText rendered="#{collaborateurControlleur.collaborateur.dateParticipation != null}" value="date de participation : " />
+									<h:outputText rendered="#{collaborateurControlleur.collaborateur.dateParticipation != null}" value="#{collaborateurControlleur.collaborateur.dateParticipation}" />
+								</td>
+							</tr>
+						</table>
+				</p:dialog> 
+				
+				<p:dialog width="800px" id="modifier" styleClass="afficher" header="modifier le collaborateur" widgetVar="dlgModifier" resizable="false">  
+						<table id="modifierCollaborateur">
+								<tr>
+									<td>
+										<h:outputText styleClass="label" value="Matricule: *" />  
+									</td>
+									<td colspan="3">
+										 <p:inputMask requiredMessage="matricule est obligatoire et doit etre composee de 5 chiffres" required="false" mask="99999" value="#{collaborateurControlleur.collaborateur.matricule}" styleClass="input" maxlength="5" size="5" id="matriculeModifier">
+										 	<f:validateLength minimum="5" for="matricule" maximum="5"></f:validateLength>
+										 </p:inputMask>  
+									</td>
+								</tr>
+								<tr>
+									<td colspan="4">
+										<p:message for="matriculeModifier" /> 
+									</td>
+								</tr>
+								<tr>
+									<td>
+										<h:outputText styleClass="label" value="Prenom: *" />  
+									</td>
+									<td>
+										 <p:inputText requiredMessage="le prenom est obligatiore" required="false" value="#{collaborateurControlleur.collaborateur.prenom}" styleClass="input" id="prenomModifier">
+										 	<p:ajax event="keyup" listener="#{collaborateurControlleur.updateAbreviation()}" update="abreviationModifier"/>
+											<f:validateLength minimum="3"></f:validateLength>
+										 </p:inputText>  
+									</td>
+									<td class="td-right">
+										<h:outputText styleClass="label" value="Nom: *" />  
+									</td>
+									<td>
+										 <p:inputText requiredMessage="le nom est obligatiore" required="false" value="#{collaborateurControlleur.collaborateur.nom}" styleClass="input" id="nomModifier">
+										 	<p:ajax event="keyup" listener="#{collaborateurControlleur.updateAbreviation()}" update="abreviationModifier"/>
+										 </p:inputText>  
+									</td>
+								</tr>
+								<tr>
+									<td colspan="2">
+										<p:message for="prenomModifier" /> 
+									</td>
+									<td colspan="2" class="td-right">
+										<p:message for="nomModifier" /> 
+									</td>
+								</tr>
+								<tr>
+									<td>
+										<h:outputText styleClass="label" value="Abreviation: *" />  
+									</td>
+									<td colspan="3">
+										 <p:inputMask requiredMessage="'abreviation est obligatoire et doit etre composee de 3caracteres"  required="false" mask="aaa" value="#{collaborateurControlleur.collaborateur.abreviation}" styleClass="input" maxlength="3" size="3" id="abreviationModifier">
+											 <f:validateLength for="abreviation" maximum="3" minimum="3" />
+										 </p:inputMask>
+									</td>
+								</tr>
+								<tr>
+									<td colspan="4">
+										<p:message for="abreviationModifier" /> 
+									</td>
+								</tr>
+								<tr>
+									<td>
+										<h:outputText styleClass="label" value="Email: *"/>  
+									</td>
+									<td colspan="3">
+										 <p:inputText requiredMessage="l'email est obligatoire"  required="false" value="#{collaborateurControlleur.collaborateur.email}" styleClass="input" id="emailModifier">
+											 <f:validateRegex
+													pattern="^[_A-Za-z0-9-\+]+(\.[_A-Za-z0-9-]+)*@[A-Za-z0-9-]+(\.[A-Za-z0-9]+)*(\.[A-Za-z]{2,})$" />
+										 </p:inputText>
+									</td>
+								</tr>
+								<tr>
+									<td colspan="4">
+										<p:message for="emailModifier" /> 
+									</td>
+								</tr>
+								<tr>
+									<td colspan="4">
+										<p:selectOneRadio id="sexeModifier" label="sexe" styleClass="radio-p" value="#{collaborateurControlleur.collaborateur.sexe}">  
+								            <f:selectItem itemLabel="Masculin" itemValue="M" />  
+								            <f:selectItem itemLabel="Feminin" itemValue="F" />  
+								        </p:selectOneRadio>
+									</td>
+								</tr>
+								<tr>
+									<td>
+										<h:outputText styleClass="label" value="Site d'affectation: *" />  
+									</td>
+									<td>
+										<p:selectOneMenu  styleClass="liste-p" value="#{collaborateurControlleur.collaborateur.site}" id="siteModifier">  
+								            <f:selectItem itemLabel="Rabat" itemValue="Rabat" />  
+								            <f:selectItem itemLabel="Oujda" itemValue="Oujda" />
+								        </p:selectOneMenu> 
+									</td>
+									<td class="td-right">
+										<h:outputText styleClass="label" value="Business unit: *" />  
+									</td>
+									<td>
+										 <p:inputText requiredMessage="business unit est obligatoire est doit etre composee de 4 caracteres" mask="aaaa" required="false" value="#{collaborateurControlleur.collaborateur.bu}" styleClass="input" size="4" maxlength="4" id="buModifier">
+										 	<f:validateLength maximum="4" minimum="4" for="bu" />
+										 	<f:validateRegex pattern="^[a-zA-Z]{3}[a-zA-Z0-9]$"></f:validateRegex>
+										 </p:inputText>  
+									</td>
+								</tr>
+								<tr>
+									<td colspan="2">
+										<p:message for="siteModifier" /> 
+									</td>
+									<td colspan="2" class="td-right">
+										<p:message for="buModifier" /> 
+									</td>
+								</tr>
+								<tr>
+									<td>
+										<h:outputText styleClass="label" value="Date d'embauche: *" />  
+									</td>
+									<td>
+										<p:calendar requiredMessage="la date d'embauche est obligatiore" required="false" navigator="true" effect="bounce" pattern="dd/MM/yyy" size="10" value="#{collaborateurControlleur.collaborateur.dateEmbauche}" id="dateEmbaucheModifier">  
+								           <p:ajax event="dateSelect" listener="#{collaborateurControlleur.updateMoisABP}" update="moisABPModifier" />
+								        </p:calendar>
+									</td>
+									<td class="td-right">
+										<h:outputText styleClass="label" value="Mois ABP: *" />  
+									</td>
+									<td>
+										 <p:selectOneMenu  styleClass="liste-p" value="#{collaborateurControlleur.collaborateur.moisBap}" id="moisABPModifier">  
+								            <f:selectItems value="#{collaborateurControlleur.mois}"></f:selectItems>
+								        </p:selectOneMenu> 
+									</td>
+								</tr>
+								<tr>
+									<td colspan="2">
+										<p:message for="dateEmbaucheModifier" /> 
+									</td>
+									<td colspan="2" class="td-right">
+										<p:message for="moisABPModifier" /> 
+									</td>
+								</tr>
+								<tr>
+									<td>
+										<h:outputText styleClass="label" value="Date participation au seminaire d'integration: *" />  
+									</td>
+									<td colspan="3">
+										<p:calendar navigator="true" effect="bounce" pattern="dd/MM/yyy" size="10" value="#{collaborateurControlleur.collaborateur.dateParticipation}" id="dateParticipationModifier">  
+								        </p:calendar>
+									</td>
+								</tr>
+								<tr>
+									<td colspan="4">
+										<p:message for="dateParticipationModifier" /> 
+									</td>
+								</tr>
+								<tr>
+									<td>
+										<h:outputText styleClass="label" value="Date depart: *" />  
+									</td>
+									<td colspan="3">
+										<p:calendar navigator="true" effect="bounce" pattern="dd/MM/yyy" size="10" value="#{collaborateurControlleur.collaborateur.dateDepart}" id="dateDepartModifier">  
+								        </p:calendar>
+									</td>
+								</tr>
+								<tr>
+									<td colspan="4">
+										<p:message for="dateDepartModifier" /> 
+									</td>
+								</tr>
+								<tr>
+									<td>
+										<h:outputText styleClass="label" value="Poste: *"/>  
+									</td>
+									<td colspan="3">
+										 <p:inputText requiredMessage="poste est obligatoire"  required="false" value="#{collaborateurControlleur.poste.titre}" styleClass="input" id="posteModifier">
+											<f:validateLength maximum="4" minimum="4"/>
+										 </p:inputText>
+									</td>
+								</tr>
+								<tr>
+									<td colspan="4">
+										<p:message for="posteModifier" /> 
+									</td>
+								</tr>
+								<tr>
+									<td>
+										<h:outputText styleClass="label" value="Poste de niveau APP: *"/>  
+									</td>
+									<td colspan="3">
+										 <p:inputText requiredMessage="poste est obligatoire"  required="false" value="#{collaborateurControlleur.posteApp.titre}" styleClass="input" id="posteAPPModifier">
+											<f:validateLength maximum="3" minimum="3"/>
+										 </p:inputText>
+									</td>
+								</tr>
+								<tr>
+									<td colspan="4">
+										<p:message for="posteAPPModifier" /> 
+									</td>
+								</tr>
+								<tr>
+									<td>
+										<h:outputText styleClass="label" value="salaire: *"/>  
+									</td>
+									<td colspan="3">
+										 <p:inputText requiredMessage="salaire est obligatoire"  required="false" value="#{collaborateurControlleur.salaire.salaire}" styleClass="input" id="salaireModifier">
+											<f:validateLength maximum="3" minimum="3"/>
+										 </p:inputText>
+									</td>
+								</tr>
+								<tr>
+									<td colspan="4">
+										<p:message for="salaireModifier" /> 
+									</td>
+								</tr>
+								<tr>
+									<td colspan="4">
+										<p:commandButton icon="ui-icon-check" id="modifierCol" actionListener="#{collaborateurControlleur.modifierCollaborateur}" value="modifier" update="resultat :ac:growl" oncomplete="dlgModifier.hide();">
+							        	</p:commandButton> 
+									</td>
+								</tr>
+							</table>	
+				</p:dialog>
+				<p:dialog  id="designerManagerRH" styleClass="afficher" header="affecter le collaborateur a un Manager RH" widgetVar="dlgDesignerManagerRH" resizable="false">  
+						<table id="affecterManager">
+								<tr>
+									<td>
+										<h:outputText styleClass="label" value="Designer un Manager RH: *" />  
+									</td>
+									<td>
+										<p:selectOneMenu   styleClass="liste-p" value="#{collaborateurControlleur.idManagerRH}" id="managerRH" effect="fade">  
+            								<f:selectItems value="#{collaborateurControlleur.managers}" var="manager" itemLabel="#{manager.nom} #{manager.prenom}  " itemValue="#{manager.idResponsable}"/> 
+								        </p:selectOneMenu> 
+									</td>
+								</tr>
+								<tr>
+									<td colspan="2">
+										<p:message for="managerRH" /> 
+									</td>
+								</tr>
+								<tr>
+									<td colspan="4">
+										<p:commandButton icon="ui-icon-check" id="btnAffecterManagerRH" actionListener="#{collaborateurControlleur.designerManagerRH}" value="designer" update="resultat :ac:growl" oncomplete="dlgDesignerManagerRH.hide();">
+							        	</p:commandButton> 
+									</td>
+								</tr>
+							</table>	
+				</p:dialog>  
+				<p:dialog id="mettreAJourDiplome" header="Nouvelle formation" widgetVar="dlgModifierFormation" resizable="false">  
+							        <h:panelGrid columns="2" style="margin-bottom:10px">  
+							            <h:outputLabel for="niveau" value="Niveau:" />  
+							            <p:selectOneMenu editable="true" styleClass="liste-p" value="#{collaborateurControlleur.diplome2.niveau}" id="niveau">  
+								            <f:selectItem itemLabel="Bac + 1" itemValue="bac + 1" />  
+								            <f:selectItem itemLabel="Bac + 2" itemValue="bac + 2" />
+								            <f:selectItem itemLabel="Bac + 3" itemValue="bac + 3" />  
+								            <f:selectItem itemLabel="Bac + 4" itemValue="bac + 4" />
+								            <f:selectItem itemLabel="Bac + 5" itemValue="bac + 5" />  
+								        </p:selectOneMenu>  
+								         <h:outputLabel for="ecole" value="Ecole:" /> 
+								       	 <p:inputText  value="#{collaborateurControlleur.diplome2.ecole}" styleClass="input" id="ecole"/>  
+							        	 <h:outputLabel for="typeEcole" value="Type de l'ecole:" />  
+							           	 <p:selectOneMenu styleClass="liste-p" value="#{collaborateurControlleur.diplome2.typeEcole}" id="typeEcole">  
+								            <f:selectItem itemLabel="Nationale" itemValue="Nationale" />  
+								            <f:selectItem itemLabel="Internationale" itemValue="Internationale" />
+								         </p:selectOneMenu>
+								         <h:outputLabel for="typeDiplome" value="Type de diplome:" />  
+							           	 <p:selectOneMenu styleClass="liste-p" value="#{collaborateurControlleur.diplome2.typeDiplome}" id="typeDiplome">  
+								            <f:selectItem itemLabel="Etatique" itemValue="Etatique" />  
+								            <f:selectItem itemLabel="Prive" itemValue="Prive" />
+								         </p:selectOneMenu>
+								         <h:outputLabel for="promotion" value="Promotion:" /> 
+								       	 <p:inputMask  mask="9999"  size="4" maxlength="4" value="#{collaborateurControlleur.diplome2.promotion}" styleClass="input" id="promotion"/>
+							        </h:panelGrid>  
+							        <p:commandButton icon="ui-icon-refresh" id="modifierFormationButton" value="modifier" actionListener="#{collaborateurControlleur.modifierFormation}" update="resultat :ac:growl" oncomplete="dlgModifierFormation.hide();">
+							        </p:commandButton>  
+							</p:dialog> 
+							<p:dialog id="ajouterFormation" header="Nouvelle formation" widgetVar="dlgAjouterFormation" resizable="false">  
+							        <h:panelGrid columns="2" style="margin-bottom:10px">  
+							            <h:outputLabel for="niveauAjouter" value="Niveau:" />  
+							            <p:selectOneMenu  styleClass="liste-p" value="#{collaborateurControlleur.diplome.niveau}" id="niveauAjouter">  
+								            <f:selectItem itemLabel="Bac + 1" itemValue="bac + 1" />  
+								            <f:selectItem itemLabel="Bac + 2" itemValue="bac + 2" />
+								            <f:selectItem itemLabel="Bac + 3" itemValue="bac + 3" />  
+								            <f:selectItem itemLabel="Bac + 4" itemValue="bac + 4" />
+								            <f:selectItem itemLabel="Bac + 5" itemValue="bac + 5" />  
+								        </p:selectOneMenu>  
+								         <h:outputLabel for="ecoleAjouter" value="Ecole:" /> 
+								       	 <p:inputText  value="#{collaborateurControlleur.diplome.ecole}" styleClass="input" id="ecoleAjouter"/>  
+							        	 <h:outputLabel for="typeEcoleAjouter" value="Type de l'ecole:" />  
+							           	 <p:selectOneMenu styleClass="liste-p" value="#{collaborateurControlleur.diplome.typeEcole}" id="typeEcoleAjouter">  
+								            <f:selectItem itemLabel="Nationale" itemValue="Nationale" />  
+								            <f:selectItem itemLabel="Internationale" itemValue="Internationale" />
+								         </p:selectOneMenu>
+								         <h:outputLabel for="typeDiplomeAjouter" value="Type de diplome:" />  
+							           	 <p:selectOneMenu styleClass="liste-p" value="#{collaborateurControlleur.diplome.typeDiplome}" id="typeDiplomeAjouter">  
+								            <f:selectItem itemLabel="Etatique" itemValue="Etatique" />  
+								            <f:selectItem itemLabel="Prive" itemValue="Prive" />
+								         </p:selectOneMenu>
+								         <h:outputLabel for="promotionAjouter" value="Promotion:" /> 
+								       	 <p:inputMask  mask="9999"  size="4" maxlength="4" value="#{collaborateurControlleur.diplome.promotion}" styleClass="input" id="promotionAjouter"/>
+							        </h:panelGrid>  
+							        <p:commandButton icon="ui-icon-check" id="submitButtonAjouter" value="ajouter" actionListener="#{collaborateurControlleur.ajouterFormation()}" update="resultat" oncomplete="dlgAjouterFormation.hide();">
+							        </p:commandButton>  
+							</p:dialog> 
+				</p:fieldset> 
+			</h:form>
+		</ui:define>
+	</ui:composition>
+</h:body>
+</html>

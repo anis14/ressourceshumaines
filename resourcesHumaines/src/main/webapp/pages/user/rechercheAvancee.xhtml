@@ -1,0 +1,125 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:s="http://www.springframework.org/security/tags">
+
+<h:head>
+	<title>Recherche Avancee</title>
+</h:head>
+<h:body>
+	<ui:composition template="modele.xhtml">
+		<ui:define name="body">
+			<h:form id="ac">
+				<p:growl id="growl"/>  
+				<p:fieldset styleClass="afficher" legend="Recherche avancee" toggleable="true" toggleSpeed="500" style="margin-top : 20px;">
+				<table class="afficher" id="rechercheAvancee">
+					<tr>
+						<td><h:outputText styleClass="label" value="Prenom: *" /></td>
+						<td><p:inputText
+								value="#{collaborateurControlleur.prenom}"
+								styleClass="input" id="prenom">
+							</p:inputText></td>
+						<td class="td-right"><h:outputText styleClass="label"
+								value="Nom: *" /></td>
+						<td><p:inputText
+								value="#{collaborateurControlleur.nom}"
+								styleClass="input" id="nom">
+							</p:inputText></td>
+					</tr>
+					<tr>
+						<td colspan="2"><p:message for="prenom" /></td>
+						<td colspan="2" class="td-right"><p:message for="nom" /></td>
+					</tr>
+					<tr>
+						<td colspan="4"><p:selectOneRadio id="sexe" label="sexe"
+								styleClass="radio-p"
+								value="#{collaborateurControlleur.sexe}">
+								<f:selectItem itemLabel="Masculin" itemValue="M" />
+								<f:selectItem itemLabel="Feminin" itemValue="F" />
+							</p:selectOneRadio></td>
+					</tr>
+					<tr>
+						<td><h:outputText styleClass="label"
+								value="Site d'affectation: *" /></td>
+						<td><p:selectOneMenu editable="true" styleClass="liste-p"
+								value="#{collaborateurControlleur.collaborateur.site}" id="site">
+								<f:selectItem itemLabel="Rabat" itemValue="Rabat" />
+								<f:selectItem itemLabel="Oujda" itemValue="Oujda" />
+							</p:selectOneMenu></td>
+						<td class="td-right"><h:outputText styleClass="label"
+								value="Business unit: *" /></td>
+						<td><p:inputMask mask="aaaa" required="false"
+								value="#{collaborateurControlleur.bu}"
+								styleClass="input" size="4" maxlength="4" id="bu">
+							</p:inputMask></td>
+					</tr>
+					<tr>
+						<td colspan="2"><p:message for="site" /></td>
+						<td colspan="2" class="td-right"><p:message for="bu" /></td>
+					</tr>
+					<tr>
+						<td><h:outputText styleClass="label"
+								value="Date d'embauche: *" /></td>
+						<td colspan="3"><p:calendar navigator="true" effect="bounce"
+								pattern="dd/MM/yyy" size="10"
+								value="#{collaborateurControlleur.dateEmbauche}"
+								id="dateEmbauche">
+							</p:calendar></td>
+					</tr>
+					<tr>
+						<td><h:outputText rstyleClass="label"
+								value="Participe au seminaire d'integration" /></td>
+						<td><p:selectBooleanCheckbox
+								label="Participe au seminaire d'integration" id="participe"
+								value="#{collaborateurControlleur.participe}">
+							</p:selectBooleanCheckbox></td>
+					</tr>
+					<tr>
+						<td><h:outputText styleClass="label"
+								value="Salaire minimum: *" /></td>
+						<td><p:inputText
+								value="#{collaborateurControlleur.salaireMinimum}"
+								styleClass="input" id="salaireMinimum">
+							</p:inputText></td>
+						<td class="td-right"><h:outputText styleClass="label"
+								value="Salaire maximum: *" /></td>
+						<td><p:inputText
+								value="#{collaborateurControlleur.salaireMAximum}"
+								styleClass="input" id="salaireMaximum">
+							</p:inputText></td>
+					</tr>
+					<tr>
+						<td colspan="2"><p:message for="salaireMinimum" /></td>
+						<td colspan="2" class="td-right"><p:message
+								for="salaireMaximum" /></td>
+					</tr>
+					<tr>
+						<td colspan="4">
+								<s:authorize ifAnyGranted="ROLE_AMBASSADEURRH">
+									<p:commandButton id="rechercheAvanceeBtn"
+										value="rechercher"
+										actionListener="#{collaborateurControlleur.rechercheAvancee()}"
+										ajax="true" update="resultat">
+									</p:commandButton>
+								</s:authorize>
+								<s:authorize access="hasRole('ROLE_MANAGERRH')">
+									<p:commandButton id="rechercheAvanceeBtn"
+										value="rechercher"
+										actionListener="#{collaborateurControlleur.rechercheAvanceeParManager()}"
+										ajax="true" update="resultat">
+									</p:commandButton>
+								</s:authorize>
+							</td>
+					</tr>
+				</table>
+				</p:fieldset>
+				<ui:include src="resultat.xhtml"></ui:include> 
+			</h:form>
+		</ui:define>
+	</ui:composition>
+</h:body>
+</html>

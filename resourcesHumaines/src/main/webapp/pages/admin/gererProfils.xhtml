@@ -1,0 +1,139 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:ui="http://java.sun.com/jsf/facelets">
+
+<h:head>
+	<title>rechercher des collaborateurs</title>
+</h:head>
+<h:body>
+		<ui:composition template="modele-admin.xhtml">
+			<ui:define name="body">
+				<div id="gestionRoles">
+					<p:fieldset styleClass="afficher" legend="Ajouter un profil" toggleable="true" toggleSpeed="500">  
+						<h:form id="ar">
+							<p:growl id="growl" />
+							<table id="ajouterRole">
+								  <tr>
+									   <td>
+											<h:outputText styleClass="label" value="Intitule : *" />  
+										</td>
+										<td>
+											 <p:inputText requiredMessage="l'intitule est obligatiore" required="true" value="#{administrationControlleur.role.intitule}" styleClass="input" id="intitule">
+											 
+											 </p:inputText> 
+											 <p:watermark value="saisir l intitule du role" for="intitule" /> 
+										</td>
+									</tr>
+									<tr>
+									   <td colspan="2"> 
+									   		<p:message for="intitule" />
+										</td>
+									</tr>
+									<tr>
+										<td>
+											<p:commandButton update=":ar:growl,:gp:roles,:ar" icon="ui-icon-check" value="ajouter" actionListener="#{administrationControlleur.ajouterRole}" ajax="true" />
+										</td>
+									</tr>
+								</table>
+							</h:form>
+					</p:fieldset>
+				</div>
+				<div id="gestionPermissions">
+					<p:fieldset styleClass="afficher" legend="Ajouter une Permission" toggleable="true" toggleSpeed="500">  
+						<h:form id="ap">
+							<table id="ajouterPermission">
+								  <tr>
+									   <td>
+											<h:outputText styleClass="label" value="Titre : *" />  
+										</td>
+										<td>
+											 <p:inputText requiredMessage="le titre de la permission est obligatiore" required="true" value="#{administrationControlleur.privilege.titre}" styleClass="input" id="titre">
+											 
+											 </p:inputText> 
+											 <p:watermark value="saisir le titre de la permission" for="titre" /> 
+										</td>
+									</tr>
+									<tr>
+									   <td colspan="2"> 
+									   		<p:message for="titre" />
+										</td>
+									</tr>
+									<tr>
+										<td>
+											<p:commandButton update=":ar:growl,:gp:roles,:ap" icon="ui-icon-check" value="ajouter" actionListener="#{administrationControlleur.ajouterPrivilege}" ajax="true" />
+										</td>
+									</tr>
+								</table>
+							</h:form>
+					</p:fieldset>
+				</div>
+				<div class="end"></div>
+				<div id="gestionProfils">
+				<h:form id="gp">
+					<p:fieldset styleClass="afficher" legend="Gerer les profils" toggleable="true" toggleSpeed="500" style="margin-top:20px;">  
+						<p:dataTable emptyMessage="pas de roles trouves" id="roles" styleClass="data" var="role"
+							value="#{administrationControlleur.roles}"
+							paginator="true" rows="5"
+							paginatorTemplate="{CurrentPageReport}  {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
+							rowsPerPageTemplate="5,10,15" >
+							
+							<p:column>
+								<f:facet name="header">
+									<h:outputText value="Intitule" />
+								</f:facet>
+								<h:outputText value="#{role.intitule}" />
+							</p:column>
+							<p:column style="width:4%">  
+				           	<p:commandButton id="mettreAJourRole" actionListener="#{administrationControlleur.preparerPrivileges(role)}" update=":gp:gererProfil" oncomplete="dlgGererProfil.show();" icon="ui-icon-refresh" title="mettre a jour le profil">  
+				            </p:commandButton> 
+				         </p:column>
+						</p:dataTable>
+						<p:dialog width="500"  id="gererProfil" styleClass="afficher" header="Profil : #{administrationControlleur.role.intitule}" widgetVar="dlgGererProfil" resizable="false">  
+							<table id="modifierProfil">
+									<tr>
+										<td>
+											<table>
+												<ui:repeat value="#{administrationControlleur.role.privileges}" var="perm">
+											 		<tr>
+											 			<td>
+											 				<h:outputText value="#{perm.titre}" />
+											 			</td>
+											 			<td>
+											 				<p:commandButton icon="ui-icon-check" actionListener="#{administrationControlleur.retirer(perm)}"  value="retirer" ajax="true" update=":gp:roles,:gp:gererProfil :ar:growl" oncomplete="dlgGererProfil.show();">
+								        					</p:commandButton>
+											 			</td>
+											 		</tr>
+												</ui:repeat>
+												<ui:repeat value="#{administrationControlleur.noPermission}" var="perm">
+											 		<tr>
+											 			<td>
+											 				<h:outputText value="#{perm.titre}" />
+											 			</td>
+											 			<td>
+											 				<p:commandButton icon="ui-icon-check" actionListener="#{administrationControlleur.ajouter(perm)}"  value="ajouter" ajax="true" update=":gp:roles,:gp:gererProfil :ar:growl" oncomplete="dlgGererProfil.show();">
+								        					</p:commandButton>
+											 			</td>
+											 		</tr>
+												</ui:repeat>
+													<tr>
+											 			<td>
+											 				<p:commandButton icon="ui-icon-check" value="terminer" actionListener="#{administrationControlleur.terminer()}" update=":gp:roles,:gp:gererProfil :ar:growl" oncomplete="dlgGererProfil.hide();">
+								        					</p:commandButton>
+											 			</td>
+											 		</tr>
+											</table>
+										</td>
+									</tr>
+							</table>	
+						</p:dialog>  
+					</p:fieldset>
+				</h:form>
+				</div>
+			</ui:define>
+		</ui:composition>
+</h:body>
+</html>

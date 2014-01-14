@@ -12,7 +12,7 @@
         </property>
         <list name="affectations" inverse="false" table="AFFECTATION" lazy="false">
             <key>
-                <column name="STATUT" />
+                <column name="IDRESPONSABLE" />
             </key>
             <list-index column="idxMANAGERRH"></list-index>
             <one-to-many class="com.resourcesHumaines.metier.bo.Affectation" />

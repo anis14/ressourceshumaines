@@ -8,7 +8,7 @@
             <column name="IDCOLLABORATEUR" />
             <generator class="native" />
         </id>
-        <property name="matricule" type="java.lang.String">
+        <property name="matricule" type="integer">
             <column name="MATRICULE" />
         </property>
         <property name="nom" type="java.lang.String">
@@ -29,9 +29,9 @@
         <property name="bu" type="java.lang.String">
             <column name="BU" />
         </property>
-        <list name="diplomes" inverse="false" table="DIPLOME" lazy="false">
+        <list name="diplomes" inverse="false" table="DIPLOME" lazy="false" cascade="all">
             <key>
-                <column name="idxCOLLABORATEUR" />
+                <column name="IDCOLLABORATEUR" />
             </key>
             <list-index column="idxCollaborateur"></list-index>
             <one-to-many class="com.resourcesHumaines.metier.bo.Diplome" />
@@ -48,40 +48,43 @@
         <property name="dateParticipation" type="java.util.Date">
             <column name="DATEPARTICIPATION" />
         </property>
-        <list name="postes" inverse="false" table="POSTE" lazy="false">
+        <list name="postes" inverse="false" table="POSTE" lazy="false" cascade="all">
             <key>
                 <column name="IDCOLLABORATEUR" />
             </key>
             <list-index column="idxCOLLABORATEUR"></list-index>
             <one-to-many class="com.resourcesHumaines.metier.bo.Poste" />
         </list>
-        <list name="postesApp" inverse="false" table="POSTEAPP" lazy="false">
+        <list name="postesApp" inverse="false" table="POSTEAPP" lazy="false" cascade="all">
             <key>
                 <column name="IDCOLLABORATEUR" />
             </key>
             <list-index column="idxCOLLABORATEUR"></list-index>
             <one-to-many class="com.resourcesHumaines.metier.bo.PosteAPP" />
         </list>
-        <list name="salaires" inverse="false" table="SALAIRE" lazy="false">
+        <list name="salaires" inverse="false" table="SALAIRE" lazy="false" cascade="all">
             <key>
                 <column name="IDCOLLABORATEUR" />
             </key>
             <list-index column="idxCOLLABORATEUR"></list-index>
             <one-to-many class="com.resourcesHumaines.metier.bo.Salaire" />
         </list>
-        <list name="competences" inverse="false" table="COMPETENCE" lazy="false">
+        <list name="competences" inverse="false" table="COMPETENCE" lazy="false" cascade="all">
             <key>
                 <column name="IDCOLLABORATEUR" />
             </key>
             <list-index column="idxCOLLABORATEUR"></list-index>
             <one-to-many class="com.resourcesHumaines.metier.bo.Competence" />
         </list>
-        <list name="affectations" inverse="false" table="AFFECTATION" lazy="false">
+        <list name="affectations" inverse="false" table="AFFECTATION" lazy="false" cascade="all">
             <key>
                 <column name="IDCOLLABORATEUR" />
             </key>
             <list-index column="idxCOLLABORATEUR"></list-index>
             <one-to-many class="com.resourcesHumaines.metier.bo.Affectation" />
         </list>
+        <property name="email" type="java.lang.String">
+            <column name="EMAIL" />
+        </property>
     </class>
 </hibernate-mapping>

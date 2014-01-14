@@ -17,7 +17,7 @@
         <property name="email" type="java.lang.String">
             <column name="EMAIL" />
         </property>
-        <many-to-one name="compte" class="com.resourcesHumaines.metier.bo.Compte" fetch="join">
+        <many-to-one name="compte" lazy="false" class="com.resourcesHumaines.metier.bo.Compte" fetch="join">
             <column name="COMPTE" />
         </many-to-one>
     </class>

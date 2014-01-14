@@ -1,0 +1,78 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:c="http://java.sun.com/jsp/jstl/core"
+	xmlns:s="http://www.springframework.org/security/tags">
+
+<h:head>
+	<title>E-BOOK</title>
+	<!-- 	<link type="text/css" rel="stylesheet" -->
+	<!-- 		href="#{request.contextPath}/style/style.css" /> -->
+</h:head>
+<h:body>
+	<ui:composition>
+		<div id="top">
+			<div id="header-logo">contact</div>
+			<div id="header-content">logo sqli</div>
+			<div id="logo-right"></div>
+		</div>
+		<div id="header-menu">
+			<h:form>
+				<ul>
+					
+					<li>
+						<p:commandLink styleClass="menu-lien" id="acceuil" action="acceuil.xhtml?faces-redirect=true" ajax="false">
+							<img src="../../images/home-icon.png" width="25px;" height="25px;"/>
+							<h:outputText value="acceuil" />
+						</p:commandLink>
+					</li>
+					<s:authorize access="hasPermission(#contact, 'ajouter_col')">
+							<li>
+								<p:commandLink styleClass="menu-lien" id="ajouterCollaborateur" action="#{collaborateurControlleur.nouveauCollaborateur}" ajax="false">
+									<img src="../../images/add_col.png" width="25px;" height="25px;"/>
+									<h:outputText value="ajouter un collaborateur" />
+								</p:commandLink>
+							</li>
+					</s:authorize>
+					<s:authorize access="hasPermission(#contact, 'afficher_statistiques')">
+							<li>
+								<p:commandLink styleClass="menu-lien" id="afficherStatistiques" action="afficherStatistiques.xhtml?faces-redirect=true" ajax="false">
+									<img src="../../images/chart-icon.png" width="25px;" height="25px;"/>
+									<h:outputText value="afficher les statistiques" />
+								</p:commandLink>
+							</li>
+					</s:authorize>
+					<s:authorize access="hasPermission(#contact, 'rechercher_col')">
+							<li>
+								<p:commandLink styleClass="menu-lien" id="rechercheAvancee" action="rechercheAvancee.xhtml?faces-redirect=true" ajax="false">
+									<img src="../../images/user-search-icon.png" width="25px;" height="25px;"/>
+									<h:outputText value="recherche avancee" />
+								</p:commandLink>
+							</li>
+					</s:authorize>
+					<s:authorize access="hasPermission(#contact, 'rechercher_col')">
+							<li>
+								<p:commandLink styleClass="menu-lien" id="recherche" action="recherche.xhtml?faces-redirect=true" ajax="false">
+									<img src="../../images/search-icon.png" width="25px;" height="25px;"/>
+									<h:outputText value="recherche par abreviation" />
+								</p:commandLink>
+							</li>
+					</s:authorize>
+					<s:authorize access="isAuthenticated()">
+						<li>
+							<img src="../../images/logout-icon.png" width="25px;" height="25px;"/>
+							<h:outputLink styleClass="menu-lien" id="deconnexion" value="${request.contextPath}/j_spring_security_logout">deconnexion</h:outputLink>
+						</li>
+					</s:authorize>
+				</ul>
+			</h:form>
+		</div>
+	</ui:composition>
+</h:body>
+</html>
+
+

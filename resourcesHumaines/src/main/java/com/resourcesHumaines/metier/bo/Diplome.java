@@ -6,7 +6,7 @@ import java.io.Serializable;
  * 
  *un objet de cette classe represente un diplome 
  */
-public class Diplome implements Serializable{
+public class Diplome implements Serializable,Cloneable{
 
 	/**
 	 * l'identifiant
@@ -146,6 +146,59 @@ public class Diplome implements Serializable{
 	public void setPromotion(String promotion) {
 		this.promotion = promotion;
 	}
+	
+	@Override
+	public boolean equals(Object obj) {
+		
+		if(obj == null){
+			return false;
+		}
+		if(this == obj){
+			return true;
+		}
+		if(!(obj instanceof Diplome)){
+			return false;
+		}
+		Diplome diplome = (Diplome)obj;
+		if(!(ecole.equals(diplome.ecole))){
+			return false;
+		}
+		if(!(typeEcole.equals(diplome.typeEcole))){
+			return false;
+		}
+		if(!(niveau.equals(diplome.niveau))){
+			return false;
+		}
+		if(!(typeDiplome.equals(diplome.typeDiplome))){
+			return false;
+		}
+		if(!(promotion.equals(diplome.promotion))){
+			return false;
+		}
+		return true;
+		
+			
+	}
+	
+	/**
+	 * methode de clone pour que son appel lors d'une affectation engendre l'affectation de la reference
+	 *  d'une nouvelle instance et non pas la reference du meme objet
+	 */
+	@Override
+	public Diplome clone() {
+    	Diplome o = null;
+    	try {
+      		// On récupère l'instance à renvoyer par l'appel de la 
+      		// méthode super.clone()
+      		o = (Diplome)super.clone();
+    	} catch(CloneNotSupportedException cnse) {
+      		// Ne devrait jamais arriver car nous implémentons 
+      		// l'interface Cloneable
+      		cnse.printStackTrace(System.err);
+	    }
+	    // on renvoie le clone
+	    return o;
+  	}
 	
 	// equals et hashcode
 	

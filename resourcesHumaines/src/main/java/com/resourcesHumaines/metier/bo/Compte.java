@@ -8,7 +8,7 @@ import java.io.Serializable;
 /**
  * une classe dont une instance represente le compte d'un utilisateur
  */
-public class Compte implements Serializable{
+public class Compte implements Serializable,Cloneable{
 	
 	/**
 	 * l'identifiant du compte
@@ -28,7 +28,7 @@ public class Compte implements Serializable{
 	/**
 	 * le role que possede le proprietaire du compte
 	 */
-	private Role role;
+	private Role role = new Role();
 	
 	/**
 	 * constructeur par defaut necessaire pour le mecanisme de reflexion utilise par les frameworks
@@ -105,6 +105,37 @@ public class Compte implements Serializable{
 	public void setRole(Role role) {
 		this.role = role;
 	}
+	
+	
+	/**
+	 * methode de clone pour que son appel lors d'une affectation engendre l'affectation de la reference
+	 *  d'une nouvelle instance et non pas la reference du meme objet
+	 */
+	@Override
+	public Object clone() {
+    	Object o = null;
+    	try {
+      		// On récupère l'instance à renvoyer par l'appel de la 
+      		// méthode super.clone()
+      		o = super.clone();
+    	} catch(CloneNotSupportedException cnse) {
+      		// Ne devrait jamais arriver car nous implémentons 
+      		// l'interface Cloneable
+      		cnse.printStackTrace(System.err);
+	    }
+	    // on renvoie le clone
+	    return o;
+  	}
+
+	/* (non-Javadoc)
+	 * @see java.lang.Object#toString()
+	 */
+	@Override
+	public String toString() {
+		return "Compte [idCompte=" + idCompte + ", login=" + login
+				+ ", password=" + password + ", role=" + role + "]";
+	}
+	
 	
 	//equals et hashcode
 	

@@ -8,13 +8,13 @@
             <column name="IDCOMPTE" />
             <generator class="native" />
         </id>
-        <property name="login" type="java.lang.String">
+        <property name="login" type="java.lang.String" unique="true" >
             <column name="LOGIN" />
         </property>
         <property name="password" type="java.lang.String">
             <column name="PASSWORD" />
         </property>
-        <many-to-one name="role" class="com.resourcesHumaines.metier.bo.Role" fetch="join">
+        <many-to-one name="role" cascade="all" lazy="false" class="com.resourcesHumaines.metier.bo.Role" fetch="join">
             <column name="ROLE" />
         </many-to-one>
     </class>

@@ -1,12 +1,13 @@
 package com.resourcesHumaines.metier.bo;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.List;
 
 /**
  * c'est une classe dont les objets representent les Roles des utilisateurs au sien de l'organisation
  */
-public class Role implements Serializable{
+public class Role implements Serializable,Cloneable{
 	
 	/**
 	 * l'identifiant du role
@@ -21,7 +22,7 @@ public class Role implements Serializable{
 	/**
 	 * la liste des permissions qui possedent les utilisateur qui ont un Role donnes 
 	 */
-	private List<Privilege> privileges;
+	private List<Privilege> privileges = new ArrayList<Privilege>();
 	
 	/**
 	 * constructeur par defaut necessaire pour le mecanisme de reflexion utilise par les frameworks
@@ -80,6 +81,37 @@ public class Role implements Serializable{
 	public void setPrivileges(List<Privilege> privileges) {
 		this.privileges = privileges;
 	}
+	
+	/**
+	 * methode de clone pour que son appel lors d'une affectation engendre l'affectation de la reference
+	 *  d'une nouvelle instance et non pas la reference du meme objet
+	 */
+	@Override
+	public Object clone() {
+    	Object o = null;
+    	try {
+      		// On récupère l'instance à renvoyer par l'appel de la 
+      		// méthode super.clone()
+      		o = super.clone();
+    	} catch(CloneNotSupportedException cnse) {
+      		// Ne devrait jamais arriver car nous implémentons 
+      		// l'interface Cloneable
+      		cnse.printStackTrace(System.err);
+	    }
+	    // on renvoie le clone
+	    return o;
+  	}
+
+	/* (non-Javadoc)
+	 * @see java.lang.Object#toString()
+	 */
+	@Override
+	public String toString() {
+		return "Role [idRole=" + idRole + ", intitule=" + intitule
+				+ ", privileges=" + privileges + "]";
+	}
+	
+	
 	
 	// equals and hashcode
 	

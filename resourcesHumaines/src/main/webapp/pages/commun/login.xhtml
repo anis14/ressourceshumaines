@@ -1,0 +1,27 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:p="http://primefaces.org/ui">
+
+<h:head>
+	<title>login</title>
+</h:head>
+<h:body>
+	
+		loginnnn
+		<h:outputText value="login2" />
+		<p:panelGrid columns="2" styleClass="afficher" header="authentification">
+			<h:outputText value="login * :" />
+			<p:inputText value="#{authentificationControlleur.username}" id="login"/>
+			<p:watermark value="login" for="login" />
+			
+			<h:outputText value="mot de passe * :" />
+			<p:password value="#{authentificationControlleur.password}" id="password"/>
+			<p:watermark value="mot de passe" for="password" />
+			
+			<p:commandButton action="#{authentificationControlleur.login()}" value="connexion" />
+		</p:panelGrid>
+</h:body>
+</html>

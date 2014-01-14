@@ -1,0 +1,238 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:ui="http://java.sun.com/jsf/facelets">
+
+<h:head>
+	<title>rechercher des collaborateurs</title>
+</h:head>
+<h:body>
+		<ui:composition template="modele-admin.xhtml">
+			<ui:define name="body">
+				<h:form id="am">
+				<p:growl id="growl" />
+					<p:fieldset styleClass="afficher" legend="Ajouter un manager RH" toggleable="true" toggleSpeed="500">  
+						<table id="ajouterManager">
+							  <tr>
+								
+									<td>
+										<h:outputText styleClass="label" value="Nom: *" />  
+									</td>
+									<td>
+										 <p:inputText requiredMessage="le nom est obligatiore" required="true" value="#{managerRHControlleur.managerRH.nom}" styleClass="input" id="nom">
+										 </p:inputText> 
+										 <p:watermark value="saisir le nom" for="nom" /> 
+									</td>
+									<td class="td-right">
+										<h:outputText styleClass="label" value="Prenom: *" />  
+									</td>
+									<td>
+										 <p:inputText requiredMessage="le prenom est obligatiore" required="true" value="#{managerRHControlleur.managerRH.prenom}" styleClass="input" id="prenom">
+										 </p:inputText> 
+										 <p:watermark value="saisir le prenom" for="prenom" />  
+									</td>
+								</tr>
+								<tr>
+									<td colspan="2">
+										<p:message for="prenom" /> 
+									</td>
+									<td colspan="2" class="td-right">
+										<p:message for="nom" /> 
+									</td>
+								</tr>
+								<tr>
+								
+									<td>
+										<h:outputText styleClass="label" value="E-mail: *" />  
+									</td>
+									<td colspan="3">
+										 <p:inputText requiredMessage="l'email est obligatiore" required="true" value="#{managerRHControlleur.managerRH.email}" styleClass="input" id="email">
+												<f:validateRegex
+													pattern="^[_A-Za-z0-9-\+]+(\.[_A-Za-z0-9-]+)*@[A-Za-z0-9-]+(\.[A-Za-z0-9]+)*(\.[A-Za-z]{2,})$" />
+												<p:ajax event="blur" listener="#{managerRHControlleur.preparerCompte}" update="login,password"/>
+										 </p:inputText> 
+										 <p:watermark value="adresse electronique" for="email" /> 
+									</td>
+								</tr>
+								<tr>
+									<td colspan="4">
+										<p:message for="email" /> 
+									</td>
+								</tr>
+								<tr>
+									<td>
+										<h:outputText styleClass="label" value="Login: *" />  
+									</td>
+									<td>
+										 <p:inputText disabled="true" requiredMessage="le login est obligatiore" required="true" value="#{managerRHControlleur.compte.login}" styleClass="input" id="login">
+										 </p:inputText> 
+										 <p:watermark value="login" for="login" /> 
+									</td>
+									<td class="td-right">
+										<h:outputText styleClass="label" value="Mot de passe: *" />  
+									</td>
+									<td>
+										 <p:password disabled="true" requiredMessage="le mot de passe est obligatiore" required="true" value="#{managerRHControlleur.compte.password}" styleClass="input" id="password">
+										 </p:password>
+										 <p:watermark value="mot de passe" for="password" />  
+									</td>
+								</tr>
+								<tr>
+									<td colspan="2">
+										<p:message for="login" /> 
+									</td>
+									<td colspan="2" class="td-right">
+										<p:message for="password" /> 
+									</td>
+								</tr>
+								<tr>
+									<td colspan="4">
+										NB : le login est par defaut l'adresse email et le mot de passe du manager est son nom
+									</td>
+								</tr>
+								<tr>
+									<td colspan="4">
+										<p:commandButton icon="ui-icon-check" action="#{managerRHControlleur.ajouterManagerRH()}" id="ajouterManager" update=":am,:am:growl" value="ajouter" ajax="false">
+							        	</p:commandButton>  
+									</td>
+								</tr>
+						</table>
+					</p:fieldset>
+				</h:form>
+				<h:form id="rm">
+					<p:fieldset styleClass="afficher" legend="Rechercher des managers" toggleable="true" toggleSpeed="500" style="margin-top : 20px;">
+						<p:inputText id="motcle" value="#{managerRHControlleur.motCle}" style="margin-bottom : 10px;padding-left : 4px;">
+							<p:ajax event="keyup" update="resultat" listener="#{managerRHControlleur.rechercheParMotCle}" />
+						</p:inputText>
+						<p:watermark value="saisir un mot cle" for="motcle"></p:watermark>
+						<p:dataTable emptyMessage="saisir le mot cle pour rechercher des managers RH" id="resultat" styleClass="data" var="man"
+						value="#{managerRHControlleur.managers}"
+						paginator="true" rows="5"
+						paginatorTemplate="{CurrentPageReport}  {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
+						rowsPerPageTemplate="5,10,15" >
+						
+						<p:column>
+							<f:facet name="header">
+								<h:outputText value="Nom" />
+							</f:facet>
+							<h:outputText value="#{man.nom}" />
+						</p:column>
+
+						<p:column>
+							<f:facet name="header">
+								<h:outputText value="Prenom" />
+							</f:facet>
+							<h:outputText value="#{man.prenom}" />
+						</p:column>
+
+						<p:column>
+							<f:facet name="header">
+								<h:outputText value="Email" />
+							</f:facet>
+							<h:outputText value="#{man.email}" />
+						</p:column>
+
+						 <p:column style="width:4%">  
+				           	<p:commandButton id="selectionner" update=":rm:afficherManager" oncomplete="dlgAfficherManager.show();" action="#{managerRHControlleur.test}" icon="ui-icon-search" title="afficher plus d'informations">  
+				                <f:setPropertyActionListener value="#{man.clone()}" target="#{managerRHControlleur.managerRHRecherche}" />  
+				            </p:commandButton> 
+				         </p:column>
+				         <p:column style="width:4%">  
+				           	<p:commandButton id="mettreAJour" update=":rm:mettreAJourManager" oncomplete="dlgModifierManager.show();" action="#{managerRHControlleur.test}"  icon="ui-icon-refresh" title="mettre a jour les informations ">  
+				                <f:setPropertyActionListener value="#{man.clone()}" target="#{managerRHControlleur.managerRHRecherche}" />  
+				            </p:commandButton> 
+				         </p:column>
+					</p:dataTable>
+					<p:dialog id="afficherManager" header="informations du manager" widgetVar="dlgAfficherManager" resizable="false">  
+							<table>
+								<tr>
+									<td>
+										<h:outputText styleClass="label" value="Nom : " />
+										<h:outputText value="#{managerRHControlleur.managerRHRecherche.nom}" />
+									</td>
+								</tr>
+								<tr>
+									<td>
+										<h:outputText styleClass="label" value="Prenom : " />
+										<h:outputText value="#{managerRHControlleur.managerRHRecherche.prenom}" />
+									</td>
+								</tr>
+								<tr>
+									<td>
+										<h:outputText styleClass="label" value="E-mail : " />
+										<h:outputText value="#{managerRHControlleur.managerRHRecherche.email}" />
+									</td>
+								</tr>
+							</table>    
+					</p:dialog> 
+					<p:dialog id="mettreAJourManager" header="modifier le manager" widgetVar="dlgModifierManager" resizable="false">  
+							<table id="ajouterManager">
+							  <tr>
+								
+									<td>
+										<h:outputText styleClass="label" value="Nom: *" />  
+									</td>
+									<td>
+										 <p:inputText  value="#{managerRHControlleur.managerRHRecherche.nom}" styleClass="input" id="nom">
+										 </p:inputText> 
+										 <p:watermark value="saisir le nom" for="nom" /> 
+									</td>
+									<td class="td-right">
+										<h:outputText styleClass="label" value="Prenom: *" />  
+									</td>
+									<td>
+										 <p:inputText value="#{managerRHControlleur.managerRHRecherche.prenom}" styleClass="input" id="prenom">
+										 </p:inputText> 
+										 <p:watermark value="saisir le prenom" for="prenom" />  
+									</td>
+								</tr>
+								<tr>
+									<td colspan="2">
+										<p:message for="prenom" /> 
+									</td>
+									<td colspan="2" class="td-right">
+										<p:message for="nom" /> 
+									</td>
+								</tr>
+								<tr>
+								
+									<td>
+										<h:outputText styleClass="label" value="E-mail: *" />  
+									</td>
+									<td colspan="3">
+										 <p:inputText value="#{managerRHControlleur.managerRHRecherche.email}" styleClass="input" id="email">
+												<f:validateRegex
+													pattern="^[_A-Za-z0-9-\+]+(\.[_A-Za-z0-9-]+)*@[A-Za-z0-9-]+(\.[A-Za-z0-9]+)*(\.[A-Za-z]{2,})$" />
+										 </p:inputText> 
+										 <p:watermark value="adresse electronique" for="email" /> 
+									</td>
+								</tr>
+								<tr>
+									<td colspan="4">
+										<p:message for="email" /> 
+									</td>
+								</tr>
+								<tr>
+									<td colspan="4">
+										  <p:selectBooleanCheckbox value="#{managerRHControlleur.managerRHRecherche.statut}">
+										  	<h:outputText value="Compte Active : " />
+										  </p:selectBooleanCheckbox>
+									</td>
+								</tr>
+								<tr>
+									<td colspan="4">
+										<p:commandButton icon="ui-icon-check" oncomplete="dlgModifierManager.hide();" action="#{managerRHControlleur.modifierManager()}" id="modifierManager" update=":rm:resultat,:am:growl" value="modifier" ajax="false">
+							        	</p:commandButton>  
+									</td>
+								</tr>
+						</table>
+					</p:dialog> 
+				  </p:fieldset>	
+				</h:form>
+			</ui:define>
+		</ui:composition>
+</h:body>
+</html>

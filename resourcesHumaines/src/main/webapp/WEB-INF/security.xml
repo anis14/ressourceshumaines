@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:s="http://www.springframework.org/schema/security"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
+		http://www.springframework.org/schema/security http://www.springframework.org/schema/security/spring-security-3.1.xsd">
+
+	
+	<bean id="permissionEvaluator" class="com.resourcesHumaines.util.HasPermission">
+		<property name="responsableDao" ref="responsableDao" />
+	</bean>
+	<bean id="expressionHandler" class="org.springframework.security.web.access.expression.DefaultWebSecurityExpressionHandler">
+		<property name="permissionEvaluator" ref="permissionEvaluator" />
+	</bean>
+	
+	<s:http auto-config="true" use-expressions="true">
+		<s:expression-handler ref="expressionHandler" />
+		<s:logout logout-success-url="/pages/commun/login.xhtml"/>
+		<s:intercept-url pattern="/pages/commun/**" access="hasRole('IS_AUTHENTICATED_ANONYMOUSLY')" />
+		<s:intercept-url pattern="/faces/pages/user/ajouterCollaborateur.xhtml"
+			access="hasPermission(#contact, 'ajouter_col')" />
+		<s:intercept-url pattern="/faces/pages/user/afficherStatistiques.xhtml"
+			access="hasPermission(#contact, 'afficher_statistiques')" />
+		<s:intercept-url pattern="/faces/pages/user/resultat.xhtml"
+			access="hasPermission(#contact, 'modifier_col')" />
+		<s:intercept-url pattern="/faces/pages/user/rechercheAvancee.xhtml"
+			access="hasPermission(#contact, 'rechercher_col')" />
+<!-- 		<s:intercept-url pattern="/faces/pages/admin/*" access="hasRole('ROLE_ADMIN')" /> -->
+	</s:http>
+	<s:authentication-manager>
+		<s:authentication-provider user-service-ref="responsableService">
+			<s:password-encoder hash="sha">
+				<s:salt-source user-property="username" />
+			</s:password-encoder>
+		</s:authentication-provider>
+	</s:authentication-manager>
+</beans>

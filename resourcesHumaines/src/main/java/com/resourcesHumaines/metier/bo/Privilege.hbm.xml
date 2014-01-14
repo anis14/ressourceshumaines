@@ -1,0 +1,22 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+"http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
+<!-- Generated 10 janv. 2014 16:42:34 by Hibernate Tools 3.4.0.CR1 -->
+<hibernate-mapping>
+    <class name="com.resourcesHumaines.metier.bo.Privilege" table="PRIVILEGE">
+        <id name="idPrivilege" type="java.lang.Long">
+            <column name="IDPRIVILEGE" />
+            <generator class="native" />
+        </id>
+        <property name="titre" type="java.lang.String">
+            <column name="TITRE" />
+        </property>
+        <list name="roles" inverse="false" table="ROLE" lazy="false">
+            <key>
+                <column name="IDPRIVILEGE" />
+            </key>
+            <list-index column="idxPRIVILEGE"></list-index>
+            <one-to-many class="com.resourcesHumaines.metier.bo.Role" />
+        </list>
+    </class>
+</hibernate-mapping>

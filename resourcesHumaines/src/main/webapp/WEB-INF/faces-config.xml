@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<faces-config version="2.1" xmlns="http://java.sun.com/xml/ns/javaee"
+ xmlns:xi="http://www.w3.org/2001/XInclude"
+ xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/web-facesconfig_2_1.xsd">
+ <managed-bean>
+  <managed-bean-name>collaborateurControlleur</managed-bean-name>
+  <managed-bean-class>com.resourcesHumaines.web.CollaborateurControlleur</managed-bean-class>
+  <managed-bean-scope>view</managed-bean-scope>
+  <managed-property>
+   <property-name>collaborateurService</property-name>
+   <property-class>com.resourcesHumaines.service.CollaborateurService</property-class>
+   <value>#{collaborateurServiceTarget}</value>
+  </managed-property>
+  <managed-property>
+   <property-name>managerRHService</property-name>
+   <property-class>com.resourcesHumaines.service.ManagerRHService</property-class>
+   <value>#{managerRHServiceTarget}</value>
+  </managed-property>
+ </managed-bean>
+ <managed-bean>
+  <managed-bean-name>managerRHControlleur</managed-bean-name>
+  <managed-bean-class>com.resourcesHumaines.web.ManagerRHControlleur</managed-bean-class>
+  <managed-bean-scope>view</managed-bean-scope>
+  <managed-property>
+   <property-name>managerRHService</property-name>
+   <property-class>com.resourcesHumaines.service.ManagerRHService</property-class>
+   <value>#{managerRHServiceTarget}</value>
+  </managed-property>
+ </managed-bean>
+ <managed-bean>
+  <managed-bean-name>administrationControlleur</managed-bean-name>
+  <managed-bean-class>com.resourcesHumaines.web.AdministrationControlleur</managed-bean-class>
+  <managed-bean-scope>view</managed-bean-scope>
+  <managed-property>
+   <property-name>priviligeService</property-name>
+   <property-class>com.resourcesHumaines.service.PrivilegeService</property-class>
+   <value>#{privilegeServiceTarget}</value>
+  </managed-property>
+  <managed-property>
+   <property-name>roleService</property-name>
+   <property-class>com.resourcesHumaines.service.RoleService</property-class>
+   <value>#{roleServiceTarget}</value>
+  </managed-property>
+ </managed-bean>
+ <managed-bean>
+  <managed-bean-name>authentificationControlleur</managed-bean-name>
+  <managed-bean-class>com.resourcesHumaines.web.AuthentificationControlleur</managed-bean-class>
+  <managed-bean-scope>request</managed-bean-scope>
+ </managed-bean>
+ <application>
+  <el-resolver>org.springframework.web.jsf.el.SpringBeanFacesELResolver</el-resolver>
+  <message-bundle>messages</message-bundle>
+ </application>
+</faces-config>

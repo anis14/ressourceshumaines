@@ -1,0 +1,208 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:aop="http://www.springframework.org/schema/aop"
+	xmlns:tx="http://www.springframework.org/schema/tx"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans
+	 http://www.springframework.org/schema/beans/spring-beans.xsd 
+	 http://www.springframework.org/schema/tx 
+	 http://www.springframework.org/schema/tx/spring-tx-2.5.xsd 
+	 http://www.springframework.org/schema/aop 
+	 http://www.springframework.org/schema/aop/spring-aop-2.5.xsd">
+
+	<!-- SESSION FACTORY -->
+	<bean id="sessionFactory"
+		class="org.springframework.orm.hibernate3.LocalSessionFactoryBean">
+		<property name="dataSource" ref="dataSource" />
+		<property name="mappingResources">
+			<list>
+				<value>com/resourcesHumaines/dao/hbm/Administrateur.hbm.xml </value>
+				<value>com/resourcesHumaines/dao/hbm/Affectation.hbm.xml </value>
+				<value>com/resourcesHumaines/dao/hbm/AmbassadeurRH.hbm.xml </value>
+				<value>com/resourcesHumaines/dao/hbm/Collaborateur.hbm.xml </value>
+				<value>com/resourcesHumaines/dao/hbm/Competence.hbm.xml </value>
+				<value>com/resourcesHumaines/dao/hbm/Compte.hbm.xml </value>
+				<value>com/resourcesHumaines/dao/hbm/Diplome.hbm.xml </value>
+				<value>com/resourcesHumaines/dao/hbm/ManagerAgence.hbm.xml </value>
+				<value>com/resourcesHumaines/dao/hbm/ManagerRH.hbm.xml </value>
+				<value>com/resourcesHumaines/dao/hbm/Poste.hbm.xml </value>
+				<value>com/resourcesHumaines/dao/hbm/PosteAPP.hbm.xml </value>
+				<value>com/resourcesHumaines/dao/hbm/Privilege.hbm.xml </value>
+				<value>com/resourcesHumaines/dao/hbm/Responsable.hbm.xml </value>
+				<value>com/resourcesHumaines/dao/hbm/ResponsableDeProduction.hbm.xml
+				</value>
+				<value>com/resourcesHumaines/dao/hbm/Role.hbm.xml </value>
+				<value>com/resourcesHumaines/dao/hbm/Salaire.hbm.xml </value>
+				<value>com/resourcesHumaines/dao/hbm/Technologie.hbm.xml </value>
+			</list>
+		</property>
+		<property name="hibernateProperties">
+			<props>
+				<prop key="hibernate.dialect">org.hibernate.dialect.MySQLDialect</prop>
+				<prop key="hibernate.hbm2ddl.auto">update</prop>
+				<prop key="hibernate.current_session_context_class">thread</prop>
+			</props>
+		</property>
+	</bean>
+	<!-- DATASOURCE -->
+	<bean id="dataSource"
+		class="org.springframework.jdbc.datasource.DriverManagerDataSource">
+		<property name="driverClassName" value="com.mysql.jdbc.Driver" />
+		<property name="url" value="jdbc:mysql://localhost/managerRH" />
+		<property name="username" value="root" />
+		<property name="password" value="uness" />
+	</bean>
+
+	<!-- gestionnaire d transactions -->
+	<bean id="transactionManager"
+		class="org.springframework.orm.hibernate3.HibernateTransactionManager">
+		<property name="sessionFactory" ref="sessionFactory" />
+	</bean>
+
+	<!-- les DAO -->
+	<bean id="affectationDao" class="com.resourcesHumaines.dao.impl.AffectationDaoImpl">
+		<property name="sessionFactory" ref="sessionFactory" />
+	</bean>
+
+	<bean id="collaborateurDao" class="com.resourcesHumaines.dao.impl.CollaborateurDaoImpl">
+		<property name="sessionFactory" ref="sessionFactory" />
+	</bean>
+
+	<bean id="competenceDao" class="com.resourcesHumaines.dao.impl.CompetenceDaoImpl">
+		<property name="sessionFactory" ref="sessionFactory" />
+	</bean>
+
+	<bean id="managerRHDao" class="com.resourcesHumaines.dao.impl.ManagerRHDaoImpl">
+		<property name="sessionFactory" ref="sessionFactory" />
+	</bean>
+
+	<bean id="posteAPPDao" class="com.resourcesHumaines.dao.impl.PosteAPPDaoImpl">
+		<property name="sessionFactory" ref="sessionFactory" />
+	</bean>
+
+	<bean id="posteDao" class="com.resourcesHumaines.dao.impl.PosteDaoImpl">
+		<property name="sessionFactory" ref="sessionFactory" />
+	</bean>
+
+	<bean id="salaireDao" class="com.resourcesHumaines.dao.impl.SalaireDaoImpl">
+		<property name="sessionFactory" ref="sessionFactory" />
+	</bean>
+
+	<bean id="technologieDao" class="com.resourcesHumaines.dao.impl.TechnologieDaoImpl">
+		<property name="sessionFactory" ref="sessionFactory" />
+	</bean>
+	
+	<bean id="diplomeDao" class="com.resourcesHumaines.dao.impl.DiplomeDaoImpl">
+		<property name="sessionFactory" ref="sessionFactory" />
+	</bean>
+	
+	<bean id="privilegeDao" class="com.resourcesHumaines.dao.impl.PrivilegeDaoImpl">
+		<property name="sessionFactory" ref="sessionFactory" />
+	</bean>
+	
+	<bean id="roleDao" class="com.resourcesHumaines.dao.impl.RoleDaoImpl">
+		<property name="sessionFactory" ref="sessionFactory" />
+	</bean>
+	
+	<bean id="compteDao" class="com.resourcesHumaines.dao.impl.CompteDaoImpl">
+		<property name="sessionFactory" ref="sessionFactory" />
+	</bean>
+	
+	<bean id="responsableDao" class="com.resourcesHumaines.dao.impl.ResponsableDaoImpl">
+		<property name="sessionFactory" ref="sessionFactory" />
+	</bean>
+
+	<!-- les services -->
+	<bean id="collaborateurService"
+		class="com.resourcesHumaines.service.impl.CollaborateurServiceImpl">
+		<property name="affecterDao" ref="affectationDao" />
+		<property name="collaborateurDao" ref="collaborateurDao" />
+		<property name="competenceDao" ref="competenceDao" />
+		<property name="managerRHDao" ref="managerRHDao" />
+		<property name="posteAPPDao" ref="posteAPPDao" />
+		<property name="posteDao" ref="posteDao" />
+		<property name="salaireDao" ref="salaireDao" />
+		<property name="technologieDao" ref="technologieDao" />
+		<property name="diplomeDao" ref="diplomeDao" />
+	</bean>
+	
+	<bean id="managerRHService" class="com.resourcesHumaines.service.impl.ManagerRHServiceImpl">
+		<property name="managerRHDao" ref="managerRHDao" />
+		<property name="compteDao" ref="compteDao" />
+		<property name="affectationDao" ref="affectationDao" />
+		<property name="roleDao" ref="roleDao" />
+		<property name="collaborateurDao" ref="collaborateurDao" />
+	</bean>
+	
+	<bean id="roleService" class="com.resourcesHumaines.service.impl.RoleServiceImpl">
+		<property name="roleDao" ref="roleDao" />
+	</bean>
+	
+	<bean id="privilegeService" class="com.resourcesHumaines.service.impl.PrivilegeServiceImpl">
+		<property name="privilegeDao" ref="privilegeDao" />
+	</bean>
+	
+	<bean id="responsableService" class="com.resourcesHumaines.service.impl.ResponsableServiceImpl">
+		<property name="responsableDao" ref="responsableDao" />
+	</bean>
+	
+<!-- aspet pour la gestion de la journalisation -->
+	<bean id="aspectLog" class="com.resourcesHumaines.aspets.Journalisation" />
+	<aop:config>
+		<aop:aspect id="journalisation" ref="aspectLog">
+			<aop:pointcut expression="execution(* com..*.*(..))" id="pointsDeJonction" />
+			<aop:before method="avantExecution" pointcut-ref="pointsDeJonction" />
+			<aop:after method="apresExecution" pointcut-ref="pointsDeJonction" />
+			<aop:after-throwing method="enException"
+				pointcut-ref="pointsDeJonction" />
+		</aop:aspect>
+	</aop:config>
+
+<!-- aspect pour la gestion des transactions -->
+	<bean id="transactionInterceptor"
+		class="org.springframework.transaction.interceptor.TransactionInterceptor">
+		<property name="transactionManager" ref="transactionManager" />
+		<property name="transactionAttributes">
+			<props>
+				<prop key="*">PROPAGATION_REQUIRED,-EntityNotFoundSericeException</prop>
+			</props>
+		</property>
+	</bean>
+
+	<bean id="collaborateurServiceTarget" class="org.springframework.aop.framework.ProxyFactoryBean">
+		<property name="target" ref="collaborateurService" />
+		<property name="interceptorNames">
+			<list>
+				<value>transactionInterceptor</value>
+			</list>
+		</property>
+	</bean>
+	
+	
+	<bean id="managerRHServiceTarget" class="org.springframework.aop.framework.ProxyFactoryBean">
+		<property name="target" ref="managerRHService" />
+		<property name="interceptorNames">
+			<list>
+				<value>transactionInterceptor</value>
+			</list>
+		</property>
+	</bean>
+	
+	<bean id="roleServiceTarget" class="org.springframework.aop.framework.ProxyFactoryBean">
+		<property name="target" ref="roleService" />
+		<property name="interceptorNames">
+			<list>
+				<value>transactionInterceptor</value>
+			</list>
+		</property>
+	</bean>
+	
+	<bean id="privilegeServiceTarget" class="org.springframework.aop.framework.ProxyFactoryBean">
+		<property name="target" ref="privilegeService" />
+		<property name="interceptorNames">
+			<list>
+				<value>transactionInterceptor</value>
+			</list>
+		</property>
+	</bean>
+	
+</beans>

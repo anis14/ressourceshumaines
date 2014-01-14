@@ -6,7 +6,7 @@ import java.util.Date;
 /**
  * un objet de cette classe represente une affectation d'un collaborateur a un manager RH
  */
-public class Affectation implements Serializable{
+public class Affectation implements Serializable,Comparable<Affectation>{
 
 	/**
 	 * l'identifiant de l'affectation
@@ -27,6 +27,8 @@ public class Affectation implements Serializable{
 	 * le manager manager RH au quelle le collaborateur a ete affecte
 	 */
 	private ManagerRH managerRH;
+	
+	private boolean actuelle = true;
 	
 	/**
 	 * constructeur par defaut necessaire pour le mecanisme de reflexion utilise par les frameworks
@@ -104,6 +106,30 @@ public class Affectation implements Serializable{
 	public void setManagerRH(ManagerRH managerRH) {
 		this.managerRH = managerRH;
 	}
+
+	
+	
+	/**
+	 * @return the actuelle
+	 */
+	public boolean isActuelle() {
+		return actuelle;
+	}
+
+	/**
+	 * @param actuelle the actuelle to set
+	 */
+	public void setActuelle(boolean actuelle) {
+		this.actuelle = actuelle;
+	}
+
+	/**
+	 * necessaire pour le trie des tableaux 
+	 */
+	public int compareTo(Affectation o) {
+		return this.dateAffectation.compareTo(o.dateAffectation);
+	}
+	
 	
 	//equals et hashcode
 	

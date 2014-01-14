@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
 "http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
-<!-- Generated 30 d??c. 2013 12:24:10 by Hibernate Tools 3.4.0.CR1 -->
+<!-- Generated 10 janv. 2014 16:42:34 by Hibernate Tools 3.4.0.CR1 -->
 <hibernate-mapping>
     <class name="com.resourcesHumaines.metier.bo.Role" table="ROLE">
         <id name="idRole" type="java.lang.Long">
@@ -11,12 +11,14 @@
         <property name="intitule" type="java.lang.String">
             <column name="INTITULE" />
         </property>
-        <list name="privileges" inverse="false" table="PRIVILEGE" lazy="false">
+        <list name="privileges" inverse="false" cascade="all" table="ROLE_PRIVILEGE" lazy="false">
             <key>
                 <column name="IDROLE" />
             </key>
-            <list-index column="idxROLE"></list-index>
-            <one-to-many class="com.resourcesHumaines.metier.bo.Privilege" />
+            <list-index></list-index>
+            <many-to-many class="com.resourcesHumaines.metier.bo.Privilege" column="IDPRIVILEGE">
+            	
+            </many-to-many>
         </list>
     </class>
 </hibernate-mapping>

@@ -1,0 +1,37 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:s="http://www.springframework.org/security/tags">
+
+<h:head>
+	<title>E-BOOK</title>
+<!-- 	<link type="text/css" rel="stylesheet" -->
+<!-- 		href="#{request.contextPath}/style/style.css" /> -->
+</h:head>
+<h:body>
+	<ui:composition>
+		<p:fieldset styleClass="afficher" legend="Recherche" toggleable="true" toggleSpeed="500" style="margin-top : 20px;">
+		<div class="content">
+			<h:form>
+				<p:inputText styleClass="keyword" id="keyword" value="#{collaborateurControlleur.abreviation}" required="true" label="Keyword" />  
+        		<p:watermark for="keyword" value="tapez l'abreviation" />
+        		<p:commandButton styleClass="btn" action="#{collaborateurControlleur.rechercheParAbreviation()}" value="rechercher" ajax="false" /> 
+			</h:form>
+			<h:form>
+			<s:authorize access="hasPermission(#contact, 'rechercher_col')">
+				<p:commandLink styleClass="links-p" action="rechercheAvancee.xhtml?faces-redirect=true">
+					<h:outputText style="color:blue;" value="recherche avancée" />
+				</p:commandLink>
+			</s:authorize>
+			</h:form>
+		</div>
+		</p:fieldset>
+	</ui:composition>
+</h:body>
+</html>
+
+

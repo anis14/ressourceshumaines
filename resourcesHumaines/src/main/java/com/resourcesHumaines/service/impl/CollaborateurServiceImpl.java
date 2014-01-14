@@ -1,11 +1,17 @@
 package com.resourcesHumaines.service.impl;
 
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Date;
+import java.util.Iterator;
 import java.util.List;
+import java.util.ListIterator;
 
 import com.resourcesHumaines.dao.AffectationDao;
 import com.resourcesHumaines.dao.CollaborateurDao;
 import com.resourcesHumaines.dao.CompetenceDao;
+import com.resourcesHumaines.dao.DiplomeDao;
 import com.resourcesHumaines.dao.ManagerRHDao;
 import com.resourcesHumaines.dao.PosteAPPDao;
 import com.resourcesHumaines.dao.PosteDao;
@@ -15,12 +21,14 @@ import com.resourcesHumaines.dao.exception.EntityNotFoundException;
 import com.resourcesHumaines.metier.bo.Affectation;
 import com.resourcesHumaines.metier.bo.Collaborateur;
 import com.resourcesHumaines.metier.bo.Competence;
+import com.resourcesHumaines.metier.bo.Diplome;
 import com.resourcesHumaines.metier.bo.ManagerRH;
 import com.resourcesHumaines.metier.bo.Poste;
 import com.resourcesHumaines.metier.bo.PosteAPP;
 import com.resourcesHumaines.metier.bo.Salaire;
 import com.resourcesHumaines.service.CollaborateurService;
 import com.resourcesHumaines.service.exception.EntityNotFoundSericeException;
+import com.resourcesHumaines.util.EnvoiEmail;
 
 public class CollaborateurServiceImpl implements CollaborateurService {
 
@@ -53,7 +61,12 @@ public class CollaborateurServiceImpl implements CollaborateurService {
 	 * pour gerer l'accees aux objets Technologie d'un collaborateur
 	 */
 	private TechnologieDao technologieDao;
-
+	
+	/**
+	 * pour gerer l'accees aux objets Diplomes d'un collaborateur
+	 */
+	private DiplomeDao diplomeDao;
+	
 	/**
 	 * pour gerer l'accees aux objets ManagerRH d'un collaborateur
 	 */
@@ -66,27 +79,44 @@ public class CollaborateurServiceImpl implements CollaborateurService {
 
 	/**
 	 * l'implimentation de la methode qui permet d'ajouter un collaborateur
+	 * @throws EntityNotFoundSericeException 
 	 */
 	public void ajouterCollaborateur(Collaborateur pCollaborateur,
 			Poste pPoste, PosteAPP pPosteApp, Salaire pSalaire,
-			List<Competence> pCompetences, ManagerRH pManagerRh) {
-		posteDao.create(pPoste);
+			List<Competence> pCompetences,List<Diplome> pDiplomes, ManagerRH pManagerRh) throws EntityNotFoundSericeException {
+		System.out.println("debut");
+		System.out.println(pPoste.getTitre());
 		posteAPPDao.create(pPosteApp);
 		salaireDao.create(pSalaire);
 		for (Competence competence : pCompetences) {
 			technologieDao.create(competence.getTechnologie());
 			competenceDao.create(competence);
 		}
-		//to remove
-		managerRHDao.create(pManagerRh);
-		Affectation affectation = new Affectation(new Date(), pCollaborateur,
-				pManagerRh);
+		pCollaborateur.setDiplomes(new ArrayList<Diplome>());
+		for(Diplome diplome : pCollaborateur.getDiplomes()){
+			diplomeDao.create(diplome);
+		}
+		pCollaborateur.setPostes(new ArrayList<Poste>());
 		pCollaborateur.getPostes().add(pPoste);
 		pCollaborateur.getPostesApp().add(pPosteApp);
 		pCollaborateur.getSalaires().add(pSalaire);
 		pCollaborateur.setCompetences(pCompetences);
-		collaborateurDao.create(pCollaborateur);
+		for(Diplome dip : pDiplomes){
+			diplomeDao.create(dip);
+		}
+		pCollaborateur.setDiplomes(pDiplomes);
+		Affectation affectation = new Affectation();
+		affectation.setDateAffectation(new Date());
 		affecterDao.create(affectation);
+		pCollaborateur.getAffectations().add(affectation);
+		pManagerRh.getAffectations().add(affectation);
+		managerRHDao.update(pManagerRh);
+		collaborateurDao.create(pCollaborateur);
+		try {
+			EnvoiEmail.envoyerEmail("benelhassan.youness@gmail.com");
+		} catch (IOException e) {
+			throw new EntityNotFoundSericeException(e.getMessage(), e);
+		}
 	}
 
 	/**
@@ -101,32 +131,32 @@ public class CollaborateurServiceImpl implements CollaborateurService {
 	 * l'implimentation de la methode qui permet de rechercher un collaborateur
 	 * par son matricule
 	 */
-	public Collaborateur rechercheParMatricule(String pMatricule)
+	public List<Collaborateur> rechercheParMatricule(int pMatricule)
 			throws EntityNotFoundSericeException {
 
-		Collaborateur collaborateur = null;
+		List<Collaborateur> collaborateurs = new ArrayList<Collaborateur>();
 		try {
-			collaborateur = collaborateurDao.rechercheParMatricule(pMatricule);
+			 collaborateurs = collaborateurDao.rechercheParMatricule(pMatricule);
 		} catch (EntityNotFoundException e) {
 			throw new EntityNotFoundSericeException(e.getMessage(), e);
 		}
-		return collaborateur;
+		return collaborateurs;
 	}
 
 	/**
 	 * l'implimentation de la methode qui permet de rechercher un collaborateur
 	 * par abreviation
 	 */
-	public Collaborateur rechercheParAbreviation(String pAbreviation)
+	public List<Collaborateur> rechercheParAbreviation(String pAbreviation,String pLongin)
 			throws EntityNotFoundSericeException {
-		Collaborateur collaborateur = null;
+		List<Collaborateur> collaborateurs = new ArrayList<Collaborateur>();
 		try {
-			collaborateur = collaborateurDao
-					.rechercheParAbreviation(pAbreviation);
+			collaborateurs = collaborateurDao
+					.rechercheParAbreviation(pAbreviation,pLongin);
 		} catch (EntityNotFoundException e) {
 			throw new EntityNotFoundSericeException(e.getMessage(), e);
 		}
-		return collaborateur;
+		return collaborateurs;
 	}
 
 	/**
@@ -135,11 +165,11 @@ public class CollaborateurServiceImpl implements CollaborateurService {
 	 */
 	public List<Collaborateur> rechercheAvancee(String pNom, String pPrenom,
 			char pSexe, String pBu, Date pDateEmbauche, Date pDateDepart,
-			boolean pParticiteAuSeminaire, float pSalaireMin, float pSalaireMax) {
+			boolean pParticiteAuSeminaire, float pSalaireMin, float pSalaireMax ,String pManagerRH,String pSite) {
 
 		return collaborateurDao.rechercheAvancee(pNom, pPrenom, pSexe, pBu,
 				pDateEmbauche, pDateDepart, pParticiteAuSeminaire, pSalaireMin,
-				pSalaireMax);
+				pSalaireMax ,pManagerRH,pSite);
 	}
 
 	public Collaborateur getById(Long pId) throws EntityNotFoundSericeException {
@@ -165,6 +195,14 @@ public class CollaborateurServiceImpl implements CollaborateurService {
 		return collaborateurDao.getAll();
 	}
 
+	public float getMaxSalaire() throws EntityNotFoundSericeException {
+		try {
+			return salaireDao.getMaxSalaire();
+		} catch (EntityNotFoundException e) {
+			throw new EntityNotFoundSericeException(e.getMessage(), e);
+		}
+	}	
+	
 	/**
 	 * @return the collaborateurDao
 	 */
@@ -250,6 +288,20 @@ public class CollaborateurServiceImpl implements CollaborateurService {
 	}
 
 	/**
+	 * @return the diplomeDao
+	 */
+	public DiplomeDao getDiplomeDao() {
+		return diplomeDao;
+	}
+
+	/**
+	 * @param diplomeDao the diplomeDao to set
+	 */
+	public void setDiplomeDao(DiplomeDao diplomeDao) {
+		this.diplomeDao = diplomeDao;
+	}
+
+	/**
 	 * @return the managerRHDao
 	 */
 	public ManagerRHDao getManagerRHDao() {
@@ -275,7 +327,14 @@ public class CollaborateurServiceImpl implements CollaborateurService {
 	 */
 	public void setAffecterDao(AffectationDao affecterDao) {
 		this.affecterDao = affecterDao;
-	}	
+	}
+
+	public void modifierDiplome(Diplome pDiplome)
+			throws EntityNotFoundSericeException {
+		diplomeDao.update(pDiplome);
+		
+	}
+
 
 	
 }

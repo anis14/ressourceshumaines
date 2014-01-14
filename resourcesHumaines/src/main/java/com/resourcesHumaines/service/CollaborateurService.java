@@ -8,6 +8,7 @@ import java.util.List;
 
 import com.resourcesHumaines.metier.bo.Collaborateur;
 import com.resourcesHumaines.metier.bo.Competence;
+import com.resourcesHumaines.metier.bo.Diplome;
 import com.resourcesHumaines.metier.bo.ManagerRH;
 import com.resourcesHumaines.metier.bo.Poste;
 import com.resourcesHumaines.metier.bo.PosteAPP;
@@ -19,20 +20,22 @@ import com.resourcesHumaines.service.exception.EntityNotFoundSericeException;
  * collaborateurs
  * 
  */
-public interface CollaborateurService {
+public interface CollaborateurService{
 
 	/**
 	 * methode permettant d'ajouter un collaborateur
-	 * @param pCollaborateur l'objet collaborateur contenant les informations de base
-	 * @param pPoste Objet poste auquel le collaborateur est affecte
-	 * @param pPosteApp Objet poste de niveau APP auquel le collaborateur est affecte
-	 * @param pSalaire Objet representant le salaire du colaborateur
-	 * @param pCompetences une liste des competences du collaborateur
-	 * @param pManagerRh le manager RHauquel le collaborateur a ete affecte
+	 * @param pCollaborateur
+	 * @param pPoste
+	 * @param pPosteApp
+	 * @param pSalaire
+	 * @param pCompetences
+	 * @param pDiplomes
+	 * @param pManagerRh
+	 * @exception EntityNotFoundSericeException
 	 */
 	public void ajouterCollaborateur(Collaborateur pCollaborateur,
 			Poste pPoste, PosteAPP pPosteApp, Salaire pSalaire,
-			List<Competence> pCompetences, ManagerRH pManagerRh);
+			List<Competence> pCompetences,List<Diplome> pDiplomes, ManagerRH pManagerRh) throws EntityNotFoundSericeException;
 	
 	/**
 	 * methode permettant de mettre a jour un collaborateur
@@ -46,15 +49,16 @@ public interface CollaborateurService {
 	 * @return
 	 * @throws EntityNotFoundSericeException l'exeption a lever en cas de problemes
 	 */
-	public Collaborateur rechercheParMatricule(String pMatricule) throws EntityNotFoundSericeException;
+	public List<Collaborateur> rechercheParMatricule(int pMatricule) throws EntityNotFoundSericeException;
 	
 	/**
 	 * methode permettant de rechercher un collaborateur par abreviation
 	 * @param pAbreviation
+	 * @param pLogin
 	 * @return
 	 * @throws EntityNotFoundSericeException l'exeption a lever en cas de problemes
 	 */
-	public Collaborateur rechercheParAbreviation(String pAbreviation) throws EntityNotFoundSericeException;
+	public List<Collaborateur> rechercheParAbreviation(String pAbreviation,String pLogin) throws EntityNotFoundSericeException;
 
 	/**
 	 * methode permettant de rechercher des collaborateurs par plusieures criteres
@@ -69,7 +73,7 @@ public interface CollaborateurService {
 	 * @return
 	 */
 	public List<Collaborateur> rechercheAvancee(String pNom,String pPrenom, char pSexe, String pBu, Date pDateEmbauche,Date pDateDepart,
-			boolean pParticiteAuSeminaire,float pSalaireMin, float pSalaireMax);
+			boolean pParticiteAuSeminaire,float pSalaireMin, float pSalaireMax ,String pManagerRH,String pSite);
 	
 	/**
 	 * retourner un collaborateur par son identifiant
@@ -91,5 +95,19 @@ public interface CollaborateurService {
 	 * @return
 	 */
 	public List<Collaborateur> getAll();
+	/**
+	 * service permettant de retourner le salaire maximum afin d'initialiser la recherche avancee
+	 * @return
+	 * @throws EntityNotFoundSericeException
+	 */
+	
+	public float getMaxSalaire() throws EntityNotFoundSericeException;
+	
+	/**
+	 * methode mermettant de modifier les information concrnant le diplome d'un collaborateur
+	 * @param pDiplome
+	 * @throws EntityNotFoundSericeException
+	 */
+	public void modifierDiplome(Diplome pDiplome) throws EntityNotFoundSericeException;
 	
 }

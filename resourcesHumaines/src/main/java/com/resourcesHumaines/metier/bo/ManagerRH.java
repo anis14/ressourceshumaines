@@ -45,6 +45,30 @@ public class ManagerRH extends Responsable {
 	public void setAffectations(List<Affectation> affectations) {
 		this.affectations = affectations;
 	}
+
+	/**
+	 * methode de clone pour que son appel lors d'une affectation engendre l'affectation de la reference
+	 *  d'une nouvelle instance et non pas la reference du meme objet
+	 */
+	@Override
+	public ManagerRH clone() {
+    	ManagerRH mRH = null;
+    	// On récupère l'instance à renvoyer par l'appel de la 
+		// méthode super.clone()
+		mRH = (ManagerRH)super.clone();
+	    // on renvoie le clone
+	    return mRH;
+  	}
+	
+	/* (non-Javadoc)
+	 * @see java.lang.Object#toString()
+	 */
+	@Override
+	public String toString() {
+		return super.toString() +"ManagerRH [statut=" + statut + ", affectations=" + affectations
+				+ "]";
+	}
+	
 	
 	
 	//equals et hashcode

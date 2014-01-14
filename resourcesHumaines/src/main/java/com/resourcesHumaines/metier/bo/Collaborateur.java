@@ -8,7 +8,7 @@ import java.util.List;
 /**
  * un objet de cette classe represente un collaborateur de l'organisation
  */
-public class Collaborateur implements Serializable{
+public class Collaborateur implements Serializable,Cloneable{
 	
 	/**
 	 * l'identifiant du collaborateur
@@ -18,7 +18,7 @@ public class Collaborateur implements Serializable{
 	/**
 	 * matricule du collaborateur
 	 */
-	private String matricule;
+	private int matricule;
 	
 	/**
 	 * nom du collaborateur
@@ -104,6 +104,8 @@ public class Collaborateur implements Serializable{
 	 */
 	private List<Affectation> affectations = new ArrayList<Affectation>();
 	
+	private String email;
+	
 	/**
 	 * constructeur par defaut necessaire pour le mecanisme de reflexion utilise par les frameworks
 	 */
@@ -128,14 +130,14 @@ public class Collaborateur implements Serializable{
 	/**
 	 * @return the matricule
 	 */
-	public String getMatricule() {
+	public int getMatricule() {
 		return matricule;
 	}
 
 	/**
 	 * @param matricule the matricule to set
 	 */
-	public void setMatricule(String matricule) {
+	public void setMatricule(int matricule) {
 		this.matricule = matricule;
 	}
 
@@ -362,6 +364,58 @@ public class Collaborateur implements Serializable{
 	public void setAffectations(List<Affectation> affectations) {
 		this.affectations = affectations;
 	}
+
+	
+	
+	/**
+	 * @return the email
+	 */
+	public String getEmail() {
+		return email;
+	}
+
+	/**
+	 * @param email the email to set
+	 */
+	public void setEmail(String email) {
+		this.email = email;
+	}
+
+	/* (non-Javadoc)
+	 * @see java.lang.Object#toString()
+	 */
+	@Override
+	public String toString() {
+		return "Collaborateur [idCollaborateur=" + idCollaborateur
+				+ ", matricule=" + matricule + ", nom=" + nom + ", prenom="
+				+ prenom + ", abreviation=" + abreviation + ", sexe=" + sexe
+				+ ", site=" + site + ", bu=" + bu + ", diplomes=" + diplomes
+				+ ", dateEmbauche=" + dateEmbauche + ", moisBap=" + moisBap
+				+ ", dateDepart=" + dateDepart + ", dateParticipation="
+				+ dateParticipation + ", postes=" + postes + ", postesApp="
+				+ postesApp + ", salaires=" + salaires + ", competences="
+				+ competences + ", affectations=" + affectations + "]";
+	}
+	
+	/**
+	 * methode de clone pour que son appel lors d'une affectation engendre l'affectation de la reference
+	 *  d'une nouvelle instance et non pas la reference du meme objet
+	 */
+	@Override
+	public Collaborateur clone() {
+    	Collaborateur o = null;
+    	try {
+      		// On récupère l'instance à renvoyer par l'appel de la 
+      		// méthode super.clone()
+      		o = (Collaborateur)super.clone();
+    	} catch(CloneNotSupportedException cnse) {
+      		// Ne devrait jamais arriver car nous implémentons 
+      		// l'interface Cloneable
+      		cnse.printStackTrace(System.err);
+	    }
+	    // on renvoie le clone
+	    return o;
+  	}
 	
 	//equals et hashcode
 }

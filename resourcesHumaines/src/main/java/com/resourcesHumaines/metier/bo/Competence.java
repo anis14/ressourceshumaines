@@ -2,7 +2,7 @@ package com.resourcesHumaines.metier.bo;
 
 import java.io.Serializable;
 
-public class Competence implements Serializable{
+public class Competence implements Serializable,Cloneable{
 
 	/**
 	 * l'identifiant de la competence
@@ -22,7 +22,7 @@ public class Competence implements Serializable{
 	/**
 	 * la technologie qui concerne la competence
 	 */
-	private Technologie technologie;
+	private Technologie technologie = new Technologie();
 	
 	
 	/**
@@ -110,6 +110,26 @@ public class Competence implements Serializable{
 		this.technologie = technologie;
 	}
 	
+	
+	/**
+	 * methode de clone pour que son appel lors d'une affectation engendre l'affectation de la reference
+	 *  d'une nouvelle instance et non pas la reference du meme objet
+	 */
+	@Override
+	public Competence clone() {
+    	Competence o = null;
+    	try {
+      		// On récupère l'instance à renvoyer par l'appel de la 
+      		// méthode super.clone()
+      		o = (Competence)super.clone();
+    	} catch(CloneNotSupportedException cnse) {
+      		// Ne devrait jamais arriver car nous implémentons 
+      		// l'interface Cloneable
+      		cnse.printStackTrace(System.err);
+	    }
+	    // on renvoie le clone
+	    return o;
+  	}
 	
 	//equals et hashcode
 	

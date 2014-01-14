@@ -11,11 +11,14 @@
         <property name="dateAffectation" type="java.util.Date">
             <column name="DATEAFFECTATION" />
         </property>
-        <many-to-one name="collaborateur" class="com.resourcesHumaines.metier.bo.Collaborateur" fetch="join">
-            <column name="COLLABORATEUR" />
+          <property name="actuelle" type="boolean">
+            <column name="ACTUELLE" />
+        </property>
+        <many-to-one name="collaborateur" class="com.resourcesHumaines.metier.bo.Collaborateur" lazy="false" cascade="all" fetch="join">
+            <column name="IDCOLLABORATEUR" />
         </many-to-one>
-        <many-to-one name="managerRH" class="com.resourcesHumaines.metier.bo.ManagerRH" fetch="join">
-            <column name="MANAGERRH" />
+        <many-to-one name="managerRH" class="com.resourcesHumaines.metier.bo.ManagerRH" lazy="false" fetch="join">
+            <column name="IDRESPONSABLE" />
         </many-to-one>
     </class>
 </hibernate-mapping>

@@ -9,6 +9,7 @@ import java.util.List;
 
 import com.resourcesHumaines.dao.exception.EntityNotFoundException;
 import com.resourcesHumaines.metier.bo.Collaborateur;
+import com.resourcesHumaines.metier.bo.ManagerRH;
 
 /**
  *c'est une interface qui offre les services de gestion d'access aux donnees pour les objets
@@ -22,15 +23,16 @@ public interface CollaborateurDao extends GenericDao<Collaborateur, Serializable
 	 * @return
 	 * @throws EntityNotFoundException l'exception a lever en cas d'erreurs
 	 */
-	Collaborateur rechercheParMatricule(String pMatricule) throws EntityNotFoundException;
+	List<Collaborateur> rechercheParMatricule(int pMatricule) throws EntityNotFoundException;
 
 	/**
-	 * methode permettant de recherche un collaborateur par abreviation
+	 * methode permettant de recherche un collaborateur d'un manager rH par abreviation
+	 * ou toutes les collaborateur si la requete est demande par un ambassadeur RH ...
 	 * @param pAbreviation
 	 * @return
 	 * @throws EntityNotFoundException l'exception a lever en cas d'erreurs
 	 */
-	Collaborateur rechercheParAbreviation(String pAbreviation) throws EntityNotFoundException;
+	List<Collaborateur> rechercheParAbreviation(String pAbreviation,String pLogin) throws EntityNotFoundException;
 
 	/**
 	 * methode permettant de rechercher des collaborateurs par plusieurs criteres
@@ -47,6 +49,6 @@ public interface CollaborateurDao extends GenericDao<Collaborateur, Serializable
 	 */
 	List<Collaborateur> rechercheAvancee(String pNom, String pPrenom,
 			char pSexe, String pBu, Date pDateEmbauche, Date pDateDepart,
-			boolean pParticiteAuSeminaire, float pSalaireMin, float pSalaireMax);
+			boolean pParticiteAuSeminaire, float pSalaireMin, float pSalaireMax ,String pManagerRH,String pSite);
 	
 }
